@@ -2,3 +2,9 @@ elm-stuff
 node_modules
 temp
 js-dev
+
+# Desktop Services Store on macOS
+.DS_Store
+
+# VS Code Workspace Settings
+.vscode

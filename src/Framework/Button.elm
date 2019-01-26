@@ -39,14 +39,13 @@ Used internally to generate the [Style Guide](https://lucamug.github.io/)
 
 -}
 
-import Color
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import Framework.Color
-import Framework.Configuration exposing (conf)
+import Framework.ColorNew
+import Framework.ConfigurationNew exposing (configuration)
 import Framework.Modifier exposing (Modifier(..))
 import Framework.Spinner as Spinner
 import Html
@@ -172,7 +171,7 @@ type State
 
 
 type alias Conf =
-    { color : Color.Color
+    { color : Element.Color
     , size : Size
     , state : State
     }
@@ -182,38 +181,38 @@ toPx : Size -> Int
 toPx size =
     case size of
         SizeSmall ->
-            conf.button.fontSmall
+            configuration.button.fontSmall
 
         SizeDefault ->
-            conf.button.fontDefault
+            configuration.button.fontDefault
 
         SizeMedium ->
-            conf.button.fontMedium
+            configuration.button.fontMedium
 
         SizeLarge ->
-            conf.button.fontLarge
+            configuration.button.fontLarge
 
         SizeJumbo ->
-            conf.button.fontJumbo
+            configuration.button.fontJumbo
 
 
 toButtonPadding : Size -> ( Int, Int )
 toButtonPadding size =
     case size of
         SizeSmall ->
-            ( conf.button.paddingXSmall, conf.button.paddingYSmall )
+            ( configuration.button.paddingXSmall, configuration.button.paddingYSmall )
 
         SizeDefault ->
-            ( conf.button.paddingXDefault, conf.button.paddingYDefault )
+            ( configuration.button.paddingXDefault, configuration.button.paddingYDefault )
 
         SizeMedium ->
-            ( conf.button.paddingXMedium, conf.button.paddingYMedium )
+            ( configuration.button.paddingXMedium, configuration.button.paddingYMedium )
 
         SizeLarge ->
-            ( conf.button.paddingXLarge, conf.button.paddingYLarge )
+            ( configuration.button.paddingXLarge, configuration.button.paddingYLarge )
 
         SizeJumbo ->
-            ( conf.button.paddingXJumbo, conf.button.paddingYJumbo )
+            ( configuration.button.paddingXJumbo, configuration.button.paddingYJumbo )
 
 
 processConf : Modifier -> Conf -> Conf
@@ -221,22 +220,22 @@ processConf modifier confButton =
     case modifier of
         -- Colors
         Muted ->
-            { confButton | color = Framework.Color.muted }
+            { confButton | color = Framework.ColorNew.muted }
 
         Primary ->
-            { confButton | color = Framework.Color.primary }
+            { confButton | color = Framework.ColorNew.primary }
 
         Success ->
-            { confButton | color = Framework.Color.success }
+            { confButton | color = Framework.ColorNew.success }
 
         Info ->
-            { confButton | color = Framework.Color.info }
+            { confButton | color = Framework.ColorNew.info }
 
         Warning ->
-            { confButton | color = Framework.Color.warning }
+            { confButton | color = Framework.ColorNew.warning }
 
         Danger ->
-            { confButton | color = Framework.Color.danger }
+            { confButton | color = Framework.ColorNew.danger }
 
         -- SIZES
         Small ->
@@ -342,14 +341,14 @@ buttonCustomizable { onPress, modifiers, label, width, extraAttrs } =
         }
 
 
-colorDefault : Color.Color
+colorDefault : Element.Color
 colorDefault =
-    Framework.Color.white
+    Framework.ColorNew.white
 
 
-colorBorderDefault : Color.Color
+colorBorderDefault : Element.Color
 colorBorderDefault =
-    Framework.Color.grey_lighter
+    Framework.ColorNew.greyLighter
 
 
 {-| Generate a list of attributes that can be attached to any element
@@ -384,29 +383,29 @@ buttonAttr modifiers =
 
                 _ ->
                     backgroundColor
-                        |> Color.lighten 0.8
-                        |> Color.saturate 0.9
+                        |> Framework.ColorNew.lighten 0.8
+                        |> Framework.ColorNew.saturate 0.9
 
         borderMouseOverColor =
             borderColor
-                |> Color.lighten 0.8
-                |> Color.saturate 0.9
+                |> Framework.ColorNew.lighten 0.8
+                |> Framework.ColorNew.saturate 0.9
 
         fontMouseOverColor =
             case confButton.state of
                 StateLoading ->
-                    Framework.Color.transparent
+                    Framework.ColorNew.transparent
 
                 StateWaiting ->
-                    Framework.Color.transparent
+                    Framework.ColorNew.transparent
 
                 StateOutlined ->
-                    Framework.Color.white
+                    Framework.ColorNew.white
 
                 _ ->
                     fontColor
-                        |> Color.lighten 0.8
-                        |> Color.saturate 0.9
+                        |> Framework.ColorNew.lighten 0.8
+                        |> Framework.ColorNew.saturate 0.9
 
         backgroundColor =
             case confButton.state of
@@ -414,11 +413,11 @@ buttonAttr modifiers =
                     cc
 
                 StateOutlined ->
-                    if confButton.color == Framework.Color.white then
+                    if confButton.color == Framework.ColorNew.white then
                         colorBorderDefault
 
                     else
-                        Framework.Color.transparent
+                        Framework.ColorNew.transparent
 
                 StateLoading ->
                     cc
@@ -427,7 +426,7 @@ buttonAttr modifiers =
                     cc
 
                 StateDisabled ->
-                    Framework.Color.disabledButtonBackground
+                    Framework.ColorNew.disabledButtonBackground
 
         borderRounded =
             case confButton.size of
@@ -438,7 +437,7 @@ buttonAttr modifiers =
                     3
 
         borderColor =
-            if confButton.color == Framework.Color.white then
+            if confButton.color == Framework.ColorNew.white then
                 colorBorderDefault
 
             else
@@ -450,11 +449,11 @@ buttonAttr modifiers =
                         backgroundColor
 
         spinnerColor =
-            if confButton.color == Framework.Color.white then
-                Framework.Color.grey_dark
+            if confButton.color == Framework.ColorNew.white then
+                Framework.ColorNew.greyDark
 
             else
-                Framework.Color.white
+                Framework.ColorNew.white
 
         fontColor =
             case confButton.state of
@@ -462,34 +461,36 @@ buttonAttr modifiers =
                     cc
 
                 StateLoading ->
-                    Framework.Color.transparent
+                    Framework.ColorNew.transparent
 
                 StateWaiting ->
-                    Framework.Color.transparent
+                    Framework.ColorNew.transparent
 
                 StateDisabled ->
-                    Framework.Color.disabledButtonFont
+                    Framework.ColorNew.disabledButtonFont
 
                 _ ->
-                    if confButton.color == Framework.Color.white then
-                        Framework.Color.grey_dark
+                    if confButton.color == Framework.ColorNew.white then
+                        Framework.ColorNew.greyDark
 
                     else
-                        Framework.Color.white
+                        Framework.ColorNew.white
 
         inFrontAddon =
             case confButton.state of
                 StateLoading ->
                     [ inFront
                         (el [ centerY, centerX ] <|
-                            Spinner.spinner Spinner.Rotation fontSize spinnerColor
+                            -- Spinner.spinner Spinner.Rotation fontSize spinnerColor
+                            none
                         )
                     ]
 
                 StateWaiting ->
                     [ inFront
                         (el [ centerY, centerX ] <|
-                            Spinner.spinner Spinner.ThreeCircles (fontSize - 4) spinnerColor
+                            -- Spinner.spinner Spinner.ThreeCircles (fontSize - 4) spinnerColor
+                            none
                         )
                     ]
 
@@ -497,21 +498,21 @@ buttonAttr modifiers =
                     []
     in
     [ Font.size fontSize
-    , Font.color <| Color.toElementColor fontColor
-    , Background.color <| Color.toElementColor backgroundColor
+    , Font.color fontColor
+    , Background.color backgroundColor
     , paddingXY (Tuple.first buttonPadding) (Tuple.second buttonPadding)
     , Border.rounded borderRounded
     , Border.width 1
-    , Border.color <| Color.toElementColor borderColor
+    , Border.color borderColor
     ]
         ++ (if confButton.state == StateDisabled then
                 [ htmlAttribute <| Html.Attributes.style "cursor" "not-allowed" ]
 
             else
                 [ mouseOver
-                    [ Font.color <| Color.toElementColor fontMouseOverColor
-                    , Background.color <| Color.toElementColor backgroundMouseOverColor
-                    , Border.color <| Color.toElementColor borderMouseOverColor
+                    [ Font.color fontMouseOverColor
+                    , Background.color backgroundMouseOverColor
+                    , Border.color borderMouseOverColor
                     ]
                 ]
            )

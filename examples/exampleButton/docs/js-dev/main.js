@@ -80,271 +80,6 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
 console.warn('Compiled in DEBUG mode. Follow the advice at https://elm-lang.org/0.19.0/optimize for better performance and smaller assets.');
 
 
-var _List_Nil_UNUSED = { $: 0 };
-var _List_Nil = { $: '[]' };
-
-function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === elm$core$Basics$EQ ? 0 : ord === elm$core$Basics$LT ? -1 : 1;
-	}));
-});
-
-
-
-// EQUALITY
-
-function _Utils_eq(x, y)
-{
-	for (
-		var pair, stack = [], isEqual = _Utils_eqHelp(x, y, 0, stack);
-		isEqual && (pair = stack.pop());
-		isEqual = _Utils_eqHelp(pair.a, pair.b, 0, stack)
-		)
-	{}
-
-	return isEqual;
-}
-
-function _Utils_eqHelp(x, y, depth, stack)
-{
-	if (depth > 100)
-	{
-		stack.push(_Utils_Tuple2(x,y));
-		return true;
-	}
-
-	if (x === y)
-	{
-		return true;
-	}
-
-	if (typeof x !== 'object' || x === null || y === null)
-	{
-		typeof x === 'function' && _Debug_crash(5);
-		return false;
-	}
-
-	/**/
-	if (x.$ === 'Set_elm_builtin')
-	{
-		x = elm$core$Set$toList(x);
-		y = elm$core$Set$toList(y);
-	}
-	if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin')
-	{
-		x = elm$core$Dict$toList(x);
-		y = elm$core$Dict$toList(y);
-	}
-	//*/
-
-	/**_UNUSED/
-	if (x.$ < 0)
-	{
-		x = elm$core$Dict$toList(x);
-		y = elm$core$Dict$toList(y);
-	}
-	//*/
-
-	for (var key in x)
-	{
-		if (!_Utils_eqHelp(x[key], y[key], depth + 1, stack))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-var _Utils_equal = F2(_Utils_eq);
-var _Utils_notEqual = F2(function(a, b) { return !_Utils_eq(a,b); });
-
-
-
-// COMPARISONS
-
-// Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
-// the particular integer values assigned to LT, EQ, and GT.
-
-function _Utils_cmp(x, y, ord)
-{
-	if (typeof x !== 'object')
-	{
-		return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
-	}
-
-	/**/
-	if (x instanceof String)
-	{
-		var a = x.valueOf();
-		var b = y.valueOf();
-		return a === b ? 0 : a < b ? -1 : 1;
-	}
-	//*/
-
-	/**_UNUSED/
-	if (!x.$)
-	//*/
-	/**/
-	if (x.$[0] === '#')
-	//*/
-	{
-		return (ord = _Utils_cmp(x.a, y.a))
-			? ord
-			: (ord = _Utils_cmp(x.b, y.b))
-				? ord
-				: _Utils_cmp(x.c, y.c);
-	}
-
-	// traverse conses until end of a list or a mismatch
-	for (; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b) {} // WHILE_CONSES
-	return ord || (x.b ? /*GT*/ 1 : y.b ? /*LT*/ -1 : /*EQ*/ 0);
-}
-
-var _Utils_lt = F2(function(a, b) { return _Utils_cmp(a, b) < 0; });
-var _Utils_le = F2(function(a, b) { return _Utils_cmp(a, b) < 1; });
-var _Utils_gt = F2(function(a, b) { return _Utils_cmp(a, b) > 0; });
-var _Utils_ge = F2(function(a, b) { return _Utils_cmp(a, b) >= 0; });
-
-var _Utils_compare = F2(function(x, y)
-{
-	var n = _Utils_cmp(x, y);
-	return n < 0 ? elm$core$Basics$LT : n ? elm$core$Basics$GT : elm$core$Basics$EQ;
-});
-
-
-// COMMON VALUES
-
-var _Utils_Tuple0_UNUSED = 0;
-var _Utils_Tuple0 = { $: '#0' };
-
-function _Utils_Tuple2_UNUSED(a, b) { return { a: a, b: b }; }
-function _Utils_Tuple2(a, b) { return { $: '#2', a: a, b: b }; }
-
-function _Utils_Tuple3_UNUSED(a, b, c) { return { a: a, b: b, c: c }; }
-function _Utils_Tuple3(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
-
-function _Utils_chr_UNUSED(c) { return c; }
-function _Utils_chr(c) { return new String(c); }
-
-
-// RECORDS
-
-function _Utils_update(oldRecord, updatedFields)
-{
-	var newRecord = {};
-
-	for (var key in oldRecord)
-	{
-		newRecord[key] = oldRecord[key];
-	}
-
-	for (var key in updatedFields)
-	{
-		newRecord[key] = updatedFields[key];
-	}
-
-	return newRecord;
-}
-
-
-// APPEND
-
-var _Utils_append = F2(_Utils_ap);
-
-function _Utils_ap(xs, ys)
-{
-	// append Strings
-	if (typeof xs === 'string')
-	{
-		return xs + ys;
-	}
-
-	// append Lists
-	if (!xs.b)
-	{
-		return ys;
-	}
-	var root = _List_Cons(xs.a, ys);
-	xs = xs.b
-	for (var curr = root; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		curr = curr.b = _List_Cons(xs.a, ys);
-	}
-	return root;
-}
-
-
-
 var _JsArray_empty = [];
 
 function _JsArray_singleton(value)
@@ -633,6 +368,16 @@ function _Debug_toAnsiString(ansi, value)
 		return _Debug_ctorColor(ansi, tag) + output;
 	}
 
+	if (typeof DataView === 'function' && value instanceof DataView)
+	{
+		return _Debug_stringColor(ansi, '<' + value.byteLength + ' bytes>');
+	}
+
+	if (typeof File === 'function' && value instanceof File)
+	{
+		return _Debug_internalColor(ansi, '<' + value.name + '>');
+	}
+
 	if (typeof value === 'object')
 	{
 		var output = [];
@@ -701,6 +446,10 @@ function _Debug_internalColor(ansi, string)
 	return ansi ? '\x1b[94m' + string + '\x1b[0m' : string;
 }
 
+function _Debug_toHexDigit(n)
+{
+	return String.fromCharCode(n < 10 ? 48 + n : 55 + n);
+}
 
 
 // CRASH
@@ -779,6 +528,271 @@ function _Debug_regionToString(region)
 
 
 
+// EQUALITY
+
+function _Utils_eq(x, y)
+{
+	for (
+		var pair, stack = [], isEqual = _Utils_eqHelp(x, y, 0, stack);
+		isEqual && (pair = stack.pop());
+		isEqual = _Utils_eqHelp(pair.a, pair.b, 0, stack)
+		)
+	{}
+
+	return isEqual;
+}
+
+function _Utils_eqHelp(x, y, depth, stack)
+{
+	if (depth > 100)
+	{
+		stack.push(_Utils_Tuple2(x,y));
+		return true;
+	}
+
+	if (x === y)
+	{
+		return true;
+	}
+
+	if (typeof x !== 'object' || x === null || y === null)
+	{
+		typeof x === 'function' && _Debug_crash(5);
+		return false;
+	}
+
+	/**/
+	if (x.$ === 'Set_elm_builtin')
+	{
+		x = elm$core$Set$toList(x);
+		y = elm$core$Set$toList(y);
+	}
+	if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin')
+	{
+		x = elm$core$Dict$toList(x);
+		y = elm$core$Dict$toList(y);
+	}
+	//*/
+
+	/**_UNUSED/
+	if (x.$ < 0)
+	{
+		x = elm$core$Dict$toList(x);
+		y = elm$core$Dict$toList(y);
+	}
+	//*/
+
+	for (var key in x)
+	{
+		if (!_Utils_eqHelp(x[key], y[key], depth + 1, stack))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+var _Utils_equal = F2(_Utils_eq);
+var _Utils_notEqual = F2(function(a, b) { return !_Utils_eq(a,b); });
+
+
+
+// COMPARISONS
+
+// Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
+// the particular integer values assigned to LT, EQ, and GT.
+
+function _Utils_cmp(x, y, ord)
+{
+	if (typeof x !== 'object')
+	{
+		return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
+	}
+
+	/**/
+	if (x instanceof String)
+	{
+		var a = x.valueOf();
+		var b = y.valueOf();
+		return a === b ? 0 : a < b ? -1 : 1;
+	}
+	//*/
+
+	/**_UNUSED/
+	if (typeof x.$ === 'undefined')
+	//*/
+	/**/
+	if (x.$[0] === '#')
+	//*/
+	{
+		return (ord = _Utils_cmp(x.a, y.a))
+			? ord
+			: (ord = _Utils_cmp(x.b, y.b))
+				? ord
+				: _Utils_cmp(x.c, y.c);
+	}
+
+	// traverse conses until end of a list or a mismatch
+	for (; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b) {} // WHILE_CONSES
+	return ord || (x.b ? /*GT*/ 1 : y.b ? /*LT*/ -1 : /*EQ*/ 0);
+}
+
+var _Utils_lt = F2(function(a, b) { return _Utils_cmp(a, b) < 0; });
+var _Utils_le = F2(function(a, b) { return _Utils_cmp(a, b) < 1; });
+var _Utils_gt = F2(function(a, b) { return _Utils_cmp(a, b) > 0; });
+var _Utils_ge = F2(function(a, b) { return _Utils_cmp(a, b) >= 0; });
+
+var _Utils_compare = F2(function(x, y)
+{
+	var n = _Utils_cmp(x, y);
+	return n < 0 ? elm$core$Basics$LT : n ? elm$core$Basics$GT : elm$core$Basics$EQ;
+});
+
+
+// COMMON VALUES
+
+var _Utils_Tuple0_UNUSED = 0;
+var _Utils_Tuple0 = { $: '#0' };
+
+function _Utils_Tuple2_UNUSED(a, b) { return { a: a, b: b }; }
+function _Utils_Tuple2(a, b) { return { $: '#2', a: a, b: b }; }
+
+function _Utils_Tuple3_UNUSED(a, b, c) { return { a: a, b: b, c: c }; }
+function _Utils_Tuple3(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
+
+function _Utils_chr_UNUSED(c) { return c; }
+function _Utils_chr(c) { return new String(c); }
+
+
+// RECORDS
+
+function _Utils_update(oldRecord, updatedFields)
+{
+	var newRecord = {};
+
+	for (var key in oldRecord)
+	{
+		newRecord[key] = oldRecord[key];
+	}
+
+	for (var key in updatedFields)
+	{
+		newRecord[key] = updatedFields[key];
+	}
+
+	return newRecord;
+}
+
+
+// APPEND
+
+var _Utils_append = F2(_Utils_ap);
+
+function _Utils_ap(xs, ys)
+{
+	// append Strings
+	if (typeof xs === 'string')
+	{
+		return xs + ys;
+	}
+
+	// append Lists
+	if (!xs.b)
+	{
+		return ys;
+	}
+	var root = _List_Cons(xs.a, ys);
+	xs = xs.b
+	for (var curr = root; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		curr = curr.b = _List_Cons(xs.a, ys);
+	}
+	return root;
+}
+
+
+
+var _List_Nil_UNUSED = { $: 0 };
+var _List_Nil = { $: '[]' };
+
+function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
+
+
+var _List_cons = F2(_List_Cons);
+
+function _List_fromArray(arr)
+{
+	var out = _List_Nil;
+	for (var i = arr.length; i--; )
+	{
+		out = _List_Cons(arr[i], out);
+	}
+	return out;
+}
+
+function _List_toArray(xs)
+{
+	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		out.push(xs.a);
+	}
+	return out;
+}
+
+var _List_map2 = F3(function(f, xs, ys)
+{
+	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
+	{
+		arr.push(A2(f, xs.a, ys.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map3 = F4(function(f, xs, ys, zs)
+{
+	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A3(f, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map4 = F5(function(f, ws, xs, ys, zs)
+{
+	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
+{
+	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_sortBy = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		return _Utils_cmp(f(a), f(b));
+	}));
+});
+
+var _List_sortWith = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		var ord = A2(f, a, b);
+		return ord === elm$core$Basics$EQ ? 0 : ord === elm$core$Basics$LT ? -1 : 1;
+	}));
+});
+
+
+
 // MATH
 
 var _Basics_add = F2(function(a, b) { return a + b; });
@@ -836,6 +850,53 @@ function _Basics_not(bool) { return !bool; }
 var _Basics_and = F2(function(a, b) { return a && b; });
 var _Basics_or  = F2(function(a, b) { return a || b; });
 var _Basics_xor = F2(function(a, b) { return a !== b; });
+
+
+
+function _Char_toCode(char)
+{
+	var code = char.charCodeAt(0);
+	if (0xD800 <= code && code <= 0xDBFF)
+	{
+		return (code - 0xD800) * 0x400 + char.charCodeAt(1) - 0xDC00 + 0x10000
+	}
+	return code;
+}
+
+function _Char_fromCode(code)
+{
+	return _Utils_chr(
+		(code < 0 || 0x10FFFF < code)
+			? '\uFFFD'
+			:
+		(code <= 0xFFFF)
+			? String.fromCharCode(code)
+			:
+		(code -= 0x10000,
+			String.fromCharCode(Math.floor(code / 0x400) + 0xD800, code % 0x400 + 0xDC00)
+		)
+	);
+}
+
+function _Char_toUpper(char)
+{
+	return _Utils_chr(char.toUpperCase());
+}
+
+function _Char_toLower(char)
+{
+	return _Utils_chr(char.toLowerCase());
+}
+
+function _Char_toLocaleUpper(char)
+{
+	return _Utils_chr(char.toLocaleUpperCase());
+}
+
+function _Char_toLocaleLower(char)
+{
+	return _Utils_chr(char.toLocaleLowerCase());
+}
 
 
 
@@ -1151,92 +1212,6 @@ function _String_fromList(chars)
 
 
 
-function _Char_toCode(char)
-{
-	var code = char.charCodeAt(0);
-	if (0xD800 <= code && code <= 0xDBFF)
-	{
-		return (code - 0xD800) * 0x400 + char.charCodeAt(1) - 0xDC00 + 0x10000
-	}
-	return code;
-}
-
-function _Char_fromCode(code)
-{
-	return _Utils_chr(
-		(code < 0 || 0x10FFFF < code)
-			? '\uFFFD'
-			:
-		(code <= 0xFFFF)
-			? String.fromCharCode(code)
-			:
-		(code -= 0x10000,
-			String.fromCharCode(Math.floor(code / 0x400) + 0xD800)
-			+
-			String.fromCharCode(code % 0x400 + 0xDC00)
-		)
-	);
-}
-
-function _Char_toUpper(char)
-{
-	return _Utils_chr(char.toUpperCase());
-}
-
-function _Char_toLower(char)
-{
-	return _Utils_chr(char.toLowerCase());
-}
-
-function _Char_toLocaleUpper(char)
-{
-	return _Utils_chr(char.toLocaleUpperCase());
-}
-
-function _Char_toLocaleLower(char)
-{
-	return _Utils_chr(char.toLocaleLowerCase());
-}
-
-
-
-var _Bitwise_and = F2(function(a, b)
-{
-	return a & b;
-});
-
-var _Bitwise_or = F2(function(a, b)
-{
-	return a | b;
-});
-
-var _Bitwise_xor = F2(function(a, b)
-{
-	return a ^ b;
-});
-
-function _Bitwise_complement(a)
-{
-	return ~a;
-};
-
-var _Bitwise_shiftLeftBy = F2(function(offset, a)
-{
-	return a << offset;
-});
-
-var _Bitwise_shiftRightBy = F2(function(offset, a)
-{
-	return a >> offset;
-});
-
-var _Bitwise_shiftRightZfBy = F2(function(offset, a)
-{
-	return a >>> offset;
-});
-
-
-
 /**/
 function _Json_errorToString(error)
 {
@@ -1263,21 +1238,56 @@ function _Json_fail(msg)
 	};
 }
 
-var _Json_decodeInt = { $: 2 };
-var _Json_decodeBool = { $: 3 };
-var _Json_decodeFloat = { $: 4 };
-var _Json_decodeValue = { $: 5 };
-var _Json_decodeString = { $: 6 };
+function _Json_decodePrim(decoder)
+{
+	return { $: 2, b: decoder };
+}
 
-function _Json_decodeList(decoder) { return { $: 7, b: decoder }; }
-function _Json_decodeArray(decoder) { return { $: 8, b: decoder }; }
+var _Json_decodeInt = _Json_decodePrim(function(value) {
+	return (typeof value !== 'number')
+		? _Json_expecting('an INT', value)
+		:
+	(-2147483647 < value && value < 2147483647 && (value | 0) === value)
+		? elm$core$Result$Ok(value)
+		:
+	(isFinite(value) && !(value % 1))
+		? elm$core$Result$Ok(value)
+		: _Json_expecting('an INT', value);
+});
 
-function _Json_decodeNull(value) { return { $: 9, c: value }; }
+var _Json_decodeBool = _Json_decodePrim(function(value) {
+	return (typeof value === 'boolean')
+		? elm$core$Result$Ok(value)
+		: _Json_expecting('a BOOL', value);
+});
+
+var _Json_decodeFloat = _Json_decodePrim(function(value) {
+	return (typeof value === 'number')
+		? elm$core$Result$Ok(value)
+		: _Json_expecting('a FLOAT', value);
+});
+
+var _Json_decodeValue = _Json_decodePrim(function(value) {
+	return elm$core$Result$Ok(_Json_wrap(value));
+});
+
+var _Json_decodeString = _Json_decodePrim(function(value) {
+	return (typeof value === 'string')
+		? elm$core$Result$Ok(value)
+		: (value instanceof String)
+			? elm$core$Result$Ok(value + '')
+			: _Json_expecting('a STRING', value);
+});
+
+function _Json_decodeList(decoder) { return { $: 3, b: decoder }; }
+function _Json_decodeArray(decoder) { return { $: 4, b: decoder }; }
+
+function _Json_decodeNull(value) { return { $: 5, c: value }; }
 
 var _Json_decodeField = F2(function(field, decoder)
 {
 	return {
-		$: 10,
+		$: 6,
 		d: field,
 		b: decoder
 	};
@@ -1286,7 +1296,7 @@ var _Json_decodeField = F2(function(field, decoder)
 var _Json_decodeIndex = F2(function(index, decoder)
 {
 	return {
-		$: 11,
+		$: 7,
 		e: index,
 		b: decoder
 	};
@@ -1295,7 +1305,7 @@ var _Json_decodeIndex = F2(function(index, decoder)
 function _Json_decodeKeyValuePairs(decoder)
 {
 	return {
-		$: 12,
+		$: 8,
 		b: decoder
 	};
 }
@@ -1303,7 +1313,7 @@ function _Json_decodeKeyValuePairs(decoder)
 function _Json_mapMany(f, decoders)
 {
 	return {
-		$: 13,
+		$: 9,
 		f: f,
 		g: decoders
 	};
@@ -1312,7 +1322,7 @@ function _Json_mapMany(f, decoders)
 var _Json_andThen = F2(function(callback, decoder)
 {
 	return {
-		$: 14,
+		$: 10,
 		b: decoder,
 		h: callback
 	};
@@ -1321,7 +1331,7 @@ var _Json_andThen = F2(function(callback, decoder)
 function _Json_oneOf(decoders)
 {
 	return {
-		$: 15,
+		$: 11,
 		g: decoders
 	};
 }
@@ -1394,61 +1404,29 @@ function _Json_runHelp(decoder, value)
 {
 	switch (decoder.$)
 	{
-		case 3:
-			return (typeof value === 'boolean')
-				? elm$core$Result$Ok(value)
-				: _Json_expecting('a BOOL', value);
-
 		case 2:
-			if (typeof value !== 'number') {
-				return _Json_expecting('an INT', value);
-			}
+			return decoder.b(value);
 
-			if (-2147483647 < value && value < 2147483647 && (value | 0) === value) {
-				return elm$core$Result$Ok(value);
-			}
-
-			if (isFinite(value) && !(value % 1)) {
-				return elm$core$Result$Ok(value);
-			}
-
-			return _Json_expecting('an INT', value);
-
-		case 4:
-			return (typeof value === 'number')
-				? elm$core$Result$Ok(value)
-				: _Json_expecting('a FLOAT', value);
-
-		case 6:
-			return (typeof value === 'string')
-				? elm$core$Result$Ok(value)
-				: (value instanceof String)
-					? elm$core$Result$Ok(value + '')
-					: _Json_expecting('a STRING', value);
-
-		case 9:
+		case 5:
 			return (value === null)
 				? elm$core$Result$Ok(decoder.c)
 				: _Json_expecting('null', value);
 
-		case 5:
-			return elm$core$Result$Ok(_Json_wrap(value));
-
-		case 7:
-			if (!Array.isArray(value))
+		case 3:
+			if (!_Json_isArray(value))
 			{
 				return _Json_expecting('a LIST', value);
 			}
 			return _Json_runArrayDecoder(decoder.b, value, _List_fromArray);
 
-		case 8:
-			if (!Array.isArray(value))
+		case 4:
+			if (!_Json_isArray(value))
 			{
 				return _Json_expecting('an ARRAY', value);
 			}
 			return _Json_runArrayDecoder(decoder.b, value, _Json_toElmArray);
 
-		case 10:
+		case 6:
 			var field = decoder.d;
 			if (typeof value !== 'object' || value === null || !(field in value))
 			{
@@ -1457,9 +1435,9 @@ function _Json_runHelp(decoder, value)
 			var result = _Json_runHelp(decoder.b, value[field]);
 			return (elm$core$Result$isOk(result)) ? result : elm$core$Result$Err(A2(elm$json$Json$Decode$Field, field, result.a));
 
-		case 11:
+		case 7:
 			var index = decoder.e;
-			if (!Array.isArray(value))
+			if (!_Json_isArray(value))
 			{
 				return _Json_expecting('an ARRAY', value);
 			}
@@ -1470,8 +1448,8 @@ function _Json_runHelp(decoder, value)
 			var result = _Json_runHelp(decoder.b, value[index]);
 			return (elm$core$Result$isOk(result)) ? result : elm$core$Result$Err(A2(elm$json$Json$Decode$Index, index, result.a));
 
-		case 12:
-			if (typeof value !== 'object' || value === null || Array.isArray(value))
+		case 8:
+			if (typeof value !== 'object' || value === null || _Json_isArray(value))
 			{
 				return _Json_expecting('an OBJECT', value);
 			}
@@ -1492,7 +1470,7 @@ function _Json_runHelp(decoder, value)
 			}
 			return elm$core$Result$Ok(elm$core$List$reverse(keyValuePairs));
 
-		case 13:
+		case 9:
 			var answer = decoder.f;
 			var decoders = decoder.g;
 			for (var i = 0; i < decoders.length; i++)
@@ -1506,13 +1484,13 @@ function _Json_runHelp(decoder, value)
 			}
 			return elm$core$Result$Ok(answer);
 
-		case 14:
+		case 10:
 			var result = _Json_runHelp(decoder.b, value);
 			return (!elm$core$Result$isOk(result))
 				? result
 				: _Json_runHelp(decoder.h(result.a), value);
 
-		case 15:
+		case 11:
 			var errors = _List_Nil;
 			for (var temp = decoder.g; temp.b; temp = temp.b) // WHILE_CONS
 			{
@@ -1549,6 +1527,11 @@ function _Json_runArrayDecoder(decoder, value, toElmValue)
 	return elm$core$Result$Ok(toElmValue(array));
 }
 
+function _Json_isArray(value)
+{
+	return Array.isArray(value) || (typeof FileList === 'function' && value instanceof FileList);
+}
+
 function _Json_toElmArray(array)
 {
 	return A2(elm$core$Array$initialize, array.length, function(i) { return array[i]; });
@@ -1580,34 +1563,30 @@ function _Json_equality(x, y)
 		case 1:
 			return x.a === y.a;
 
-		case 3:
 		case 2:
-		case 4:
-		case 6:
-		case 5:
-			return true;
+			return x.b === y.b;
 
-		case 9:
+		case 5:
 			return x.c === y.c;
 
-		case 7:
+		case 3:
+		case 4:
 		case 8:
-		case 12:
 			return _Json_equality(x.b, y.b);
 
-		case 10:
+		case 6:
 			return x.d === y.d && _Json_equality(x.b, y.b);
 
-		case 11:
+		case 7:
 			return x.e === y.e && _Json_equality(x.b, y.b);
 
-		case 13:
+		case 9:
 			return x.f === y.f && _Json_listEquality(x.g, y.g);
 
-		case 14:
+		case 10:
 			return x.h === y.h && _Json_equality(x.b, y.b);
 
-		case 15:
+		case 11:
 			return _Json_listEquality(x.g, y.g);
 	}
 }
@@ -3890,17 +3869,76 @@ function _VirtualDom_dekey(keyedNode)
 		b: keyedNode.b
 	};
 }
-var author$project$Color$lighten = F2(
-	function (quantity, cl) {
-		return cl;
+
+
+
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+var elm$core$Basics$apL = F2(
+	function (f, x) {
+		return f(x);
 	});
-var author$project$Color$saturate = F2(
-	function (quantity, cl) {
-		return cl;
-	});
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Basics$EQ = {$: 'EQ'};
-var elm$core$Basics$GT = {$: 'GT'};
 var elm$core$Basics$LT = {$: 'LT'};
+var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
+var elm$core$Array$foldr = F3(
+	function (func, baseCase, _n0) {
+		var tree = _n0.c;
+		var tail = _n0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (node.$ === 'SubTree') {
+					var subTree = node.a;
+					return A3(elm$core$Elm$JsArray$foldr, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3(elm$core$Elm$JsArray$foldr, func, acc, values);
+				}
+			});
+		return A3(
+			elm$core$Elm$JsArray$foldr,
+			helper,
+			A3(elm$core$Elm$JsArray$foldr, func, baseCase, tail),
+			tree);
+	});
+var elm$core$List$cons = _List_cons;
+var elm$core$Array$toList = function (array) {
+	return A3(elm$core$Array$foldr, elm$core$List$cons, _List_Nil, array);
+};
+var elm$core$Basics$GT = {$: 'GT'};
 var elm$core$Dict$foldr = F3(
 	function (func, acc, t) {
 		foldr:
@@ -3926,7 +3964,6 @@ var elm$core$Dict$foldr = F3(
 			}
 		}
 	});
-var elm$core$List$cons = _List_cons;
 var elm$core$Dict$toList = function (dict) {
 	return A3(
 		elm$core$Dict$foldr,
@@ -3954,293 +3991,41 @@ var elm$core$Set$toList = function (_n0) {
 	var dict = _n0.a;
 	return elm$core$Dict$keys(dict);
 };
-var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
-var elm$core$Array$foldr = F3(
-	function (func, baseCase, _n0) {
-		var tree = _n0.c;
-		var tail = _n0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (node.$ === 'SubTree') {
-					var subTree = node.a;
-					return A3(elm$core$Elm$JsArray$foldr, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3(elm$core$Elm$JsArray$foldr, func, acc, values);
-				}
-			});
-		return A3(
-			elm$core$Elm$JsArray$foldr,
-			helper,
-			A3(elm$core$Elm$JsArray$foldr, func, baseCase, tail),
-			tree);
-	});
-var elm$core$Array$toList = function (array) {
-	return A3(elm$core$Array$foldr, elm$core$List$cons, _List_Nil, array);
+var elm$core$Basics$identity = function (x) {
+	return x;
 };
-var elm$core$Basics$fdiv = _Basics_fdiv;
-var elm$core$Basics$toFloat = _Basics_toFloat;
-var author$project$Color$toFloatNorm255 = function (_int) {
-	return _int / 255;
-};
-var elm$core$Basics$add = _Basics_add;
-var elm$core$Basics$floor = _Basics_floor;
-var elm$core$Basics$modBy = _Basics_modBy;
-var elm$core$Basics$sub = _Basics_sub;
-var author$project$Color$fmod = F2(
-	function (f, n) {
-		var integer = elm$core$Basics$floor(f);
-		return (A2(elm$core$Basics$modBy, n, integer) + f) - integer;
-	});
-var elm$core$Basics$lt = _Utils_lt;
-var elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var elm$core$Basics$abs = function (n) {
-	return (n < 0) ? (-n) : n;
-};
-var elm$core$Basics$mul = _Basics_mul;
-var elm$core$Basics$pi = _Basics_pi;
-var elm$core$Basics$degrees = function (angleInDegrees) {
-	return (angleInDegrees * elm$core$Basics$pi) / 180;
-};
-var author$project$Color$hslToRgb = F3(
-	function (hue, saturation, lightness) {
-		var normHue = hue / elm$core$Basics$degrees(60);
-		var chroma = (1 - elm$core$Basics$abs((2 * lightness) - 1)) * saturation;
-		var m = lightness - (chroma / 2);
-		var x = chroma * (1 - elm$core$Basics$abs(
-			A2(author$project$Color$fmod, normHue, 2) - 1));
-		var _n0 = (normHue < 0) ? _Utils_Tuple3(0, 0, 0) : ((normHue < 1) ? _Utils_Tuple3(chroma, x, 0) : ((normHue < 2) ? _Utils_Tuple3(x, chroma, 0) : ((normHue < 3) ? _Utils_Tuple3(0, chroma, x) : ((normHue < 4) ? _Utils_Tuple3(0, x, chroma) : ((normHue < 5) ? _Utils_Tuple3(x, 0, chroma) : ((normHue < 6) ? _Utils_Tuple3(chroma, 0, x) : _Utils_Tuple3(0, 0, 0)))))));
-		var r = _n0.a;
-		var g = _n0.b;
-		var b = _n0.c;
-		return _Utils_Tuple3(r + m, g + m, b + m);
-	});
-var elm$core$Basics$round = _Basics_round;
-var author$project$Color$toRgb = function (color) {
-	if (color.$ === 'RGBA') {
-		var r = color.a;
-		var g = color.b;
-		var b = color.c;
-		var a = color.d;
-		return {alpha: a, blue: b, green: g, red: r};
+var elm$core$Basics$False = {$: 'False'};
+var elm$core$Basics$True = {$: 'True'};
+var elm$core$Result$isOk = function (result) {
+	if (result.$ === 'Ok') {
+		return true;
 	} else {
-		var h = color.a;
-		var s = color.b;
-		var l = color.c;
-		var a = color.d;
-		var _n1 = A3(author$project$Color$hslToRgb, h, s, l);
-		var r = _n1.a;
-		var g = _n1.b;
-		var b = _n1.c;
-		return {
-			alpha: a,
-			blue: elm$core$Basics$round(255 * b),
-			green: elm$core$Basics$round(255 * g),
-			red: elm$core$Basics$round(255 * r)
-		};
+		return false;
 	}
 };
-var mdgriffith$elm_ui$Internal$Model$Rgba = F4(
+var elm$core$Array$branchFactor = 32;
+var elm$core$Array$Array_elm_builtin = F4(
 	function (a, b, c, d) {
-		return {$: 'Rgba', a: a, b: b, c: c, d: d};
+		return {$: 'Array_elm_builtin', a: a, b: b, c: c, d: d};
 	});
-var mdgriffith$elm_ui$Element$rgba = mdgriffith$elm_ui$Internal$Model$Rgba;
-var author$project$Color$toElementColor = function (color) {
-	var c = author$project$Color$toRgb(color);
-	return A4(
-		mdgriffith$elm_ui$Element$rgba,
-		author$project$Color$toFloatNorm255(c.red),
-		author$project$Color$toFloatNorm255(c.green),
-		author$project$Color$toFloatNorm255(c.blue),
-		c.alpha);
-};
-var author$project$Framework$Button$SizeDefault = {$: 'SizeDefault'};
-var author$project$Framework$Button$StateDefault = {$: 'StateDefault'};
-var author$project$Framework$Button$StateDisabled = {$: 'StateDisabled'};
-var elm$core$Maybe$Just = function (a) {
-	return {$: 'Just', a: a};
-};
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var elm$core$String$cons = _String_cons;
-var elm$core$String$startsWith = _String_startsWith;
-var author$project$Color$withPrecedingHash = function (str) {
-	return A2(elm$core$String$startsWith, '#', str) ? str : A2(
-		elm$core$String$cons,
-		_Utils_chr('#'),
-		str);
-};
-var author$project$Color$erroneousHex = function (str) {
-	return {
-		alpha: 1,
-		blue: 0,
-		green: 0,
-		red: 0,
-		value: author$project$Color$withPrecedingHash(str)
-	};
-};
-var elm$core$Basics$append = _Utils_append;
-var elm$core$Basics$pow = _Basics_pow;
-var elm$core$Result$Err = function (a) {
-	return {$: 'Err', a: a};
-};
-var elm$core$Result$Ok = function (a) {
-	return {$: 'Ok', a: a};
-};
-var elm$core$String$fromChar = function (_char) {
-	return A2(elm$core$String$cons, _char, '');
-};
-var author$project$Color$fromStringHelp = F3(
-	function (position, chars, accumulated) {
-		fromStringHelp:
-		while (true) {
-			if (!chars.b) {
-				return elm$core$Result$Ok(accumulated);
-			} else {
-				var _char = chars.a;
-				var rest = chars.b;
-				switch (_char.valueOf()) {
-					case '0':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated;
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '1':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + A2(elm$core$Basics$pow, 16, position);
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '2':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (2 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '3':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (3 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '4':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (4 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '5':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (5 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '6':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (6 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '7':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (7 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '8':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (8 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case '9':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (9 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case 'a':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (10 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case 'b':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (11 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case 'c':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (12 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case 'd':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (13 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case 'e':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (14 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					case 'f':
-						var $temp$position = position - 1,
-							$temp$chars = rest,
-							$temp$accumulated = accumulated + (15 * A2(elm$core$Basics$pow, 16, position));
-						position = $temp$position;
-						chars = $temp$chars;
-						accumulated = $temp$accumulated;
-						continue fromStringHelp;
-					default:
-						var nonHex = _char;
-						return elm$core$Result$Err(
-							elm$core$String$fromChar(nonHex) + ' is not a valid hexadecimal character.');
-				}
-			}
-		}
+var elm$core$Basics$ceiling = _Basics_ceiling;
+var elm$core$Basics$fdiv = _Basics_fdiv;
+var elm$core$Basics$logBase = F2(
+	function (base, number) {
+		return _Basics_log(number) / _Basics_log(base);
 	});
-var elm$core$Basics$apR = F2(
-	function (x, f) {
-		return f(x);
-	});
+var elm$core$Basics$toFloat = _Basics_toFloat;
+var elm$core$Array$shiftStep = elm$core$Basics$ceiling(
+	A2(elm$core$Basics$logBase, 2, elm$core$Array$branchFactor));
+var elm$core$Elm$JsArray$empty = _JsArray_empty;
+var elm$core$Array$empty = A4(elm$core$Array$Array_elm_builtin, 0, elm$core$Array$shiftStep, elm$core$Elm$JsArray$empty, elm$core$Elm$JsArray$empty);
+var elm$core$Array$Leaf = function (a) {
+	return {$: 'Leaf', a: a};
+};
+var elm$core$Array$SubTree = function (a) {
+	return {$: 'SubTree', a: a};
+};
+var elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
 var elm$core$List$foldl = F3(
 	function (func, acc, list) {
 		foldl:
@@ -4260,999 +4045,9 @@ var elm$core$List$foldl = F3(
 			}
 		}
 	});
-var elm$core$List$length = function (xs) {
-	return A3(
-		elm$core$List$foldl,
-		F2(
-			function (_n0, i) {
-				return i + 1;
-			}),
-		0,
-		xs);
-};
-var elm$core$List$tail = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return elm$core$Maybe$Just(xs);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var elm$core$Result$map = F2(
-	function (func, ra) {
-		if (ra.$ === 'Ok') {
-			var a = ra.a;
-			return elm$core$Result$Ok(
-				func(a));
-		} else {
-			var e = ra.a;
-			return elm$core$Result$Err(e);
-		}
-	});
-var elm$core$Result$mapError = F2(
-	function (f, result) {
-		if (result.$ === 'Ok') {
-			var v = result.a;
-			return elm$core$Result$Ok(v);
-		} else {
-			var e = result.a;
-			return elm$core$Result$Err(
-				f(e));
-		}
-	});
-var elm$core$Basics$eq = _Utils_equal;
-var elm$core$String$isEmpty = function (string) {
-	return string === '';
-};
-var elm$core$String$join = F2(
-	function (sep, chunks) {
-		return A2(
-			_String_join,
-			sep,
-			_List_toArray(chunks));
-	});
-var elm$core$String$length = _String_length;
-var elm$core$String$foldr = _String_foldr;
-var elm$core$String$toList = function (string) {
-	return A3(elm$core$String$foldr, elm$core$List$cons, _List_Nil, string);
-};
-var author$project$Color$fromString = function (str) {
-	if (elm$core$String$isEmpty(str)) {
-		return elm$core$Result$Err('Empty strings are not valid hexadecimal strings.');
-	} else {
-		var result = function () {
-			if (A2(elm$core$String$startsWith, '-', str)) {
-				var list = A2(
-					elm$core$Maybe$withDefault,
-					_List_Nil,
-					elm$core$List$tail(
-						elm$core$String$toList(str)));
-				return A2(
-					elm$core$Result$map,
-					elm$core$Basics$negate,
-					A3(
-						author$project$Color$fromStringHelp,
-						elm$core$List$length(list) - 1,
-						list,
-						0));
-			} else {
-				return A3(
-					author$project$Color$fromStringHelp,
-					elm$core$String$length(str) - 1,
-					elm$core$String$toList(str),
-					0);
-			}
-		}();
-		var formatError = function (err) {
-			return A2(
-				elm$core$String$join,
-				' ',
-				_List_fromArray(
-					['\"' + (str + '\"'), 'is not a valid hexadecimal string because', err]));
-		};
-		return A2(elm$core$Result$mapError, formatError, result);
-	}
-};
-var elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
-var elm$core$String$fromList = _String_fromList;
-var elm$core$String$toLower = _String_toLower;
-var author$project$Color$validHex = F5(
-	function (str, _n0, _n1, _n2, _n3) {
-		var r1 = _n0.a;
-		var r2 = _n0.b;
-		var g1 = _n1.a;
-		var g2 = _n1.b;
-		var b1 = _n2.a;
-		var b2 = _n2.b;
-		var a1 = _n3.a;
-		var a2 = _n3.b;
-		var toResult = A2(
-			elm$core$Basics$composeR,
-			elm$core$String$fromList,
-			A2(elm$core$Basics$composeR, elm$core$String$toLower, author$project$Color$fromString));
-		var results = _Utils_Tuple2(
-			_Utils_Tuple2(
-				toResult(
-					_List_fromArray(
-						[r1, r2])),
-				toResult(
-					_List_fromArray(
-						[g1, g2]))),
-			_Utils_Tuple2(
-				toResult(
-					_List_fromArray(
-						[b1, b2])),
-				toResult(
-					_List_fromArray(
-						[a1, a2]))));
-		if ((((results.a.a.$ === 'Ok') && (results.a.b.$ === 'Ok')) && (results.b.a.$ === 'Ok')) && (results.b.b.$ === 'Ok')) {
-			var _n5 = results.a;
-			var red = _n5.a.a;
-			var green = _n5.b.a;
-			var _n6 = results.b;
-			var blue = _n6.a.a;
-			var alpha = _n6.b.a;
-			return {
-				alpha: alpha / 255,
-				blue: blue,
-				green: green,
-				red: red,
-				value: author$project$Color$withPrecedingHash(str)
-			};
-		} else {
-			return author$project$Color$erroneousHex(str);
-		}
-	});
-var elm$core$String$slice = _String_slice;
-var elm$core$String$dropLeft = F2(
-	function (n, string) {
-		return (n < 1) ? string : A3(
-			elm$core$String$slice,
-			n,
-			elm$core$String$length(string),
-			string);
-	});
-var author$project$Color$hex = function (str) {
-	var withoutHash = A2(elm$core$String$startsWith, '#', str) ? A2(elm$core$String$dropLeft, 1, str) : str;
-	var _n0 = elm$core$String$toList(withoutHash);
-	_n0$4:
-	while (true) {
-		if ((_n0.b && _n0.b.b) && _n0.b.b.b) {
-			if (!_n0.b.b.b.b) {
-				var r = _n0.a;
-				var _n1 = _n0.b;
-				var g = _n1.a;
-				var _n2 = _n1.b;
-				var b = _n2.a;
-				return A5(
-					author$project$Color$validHex,
-					str,
-					_Utils_Tuple2(r, r),
-					_Utils_Tuple2(g, g),
-					_Utils_Tuple2(b, b),
-					_Utils_Tuple2(
-						_Utils_chr('f'),
-						_Utils_chr('f')));
-			} else {
-				if (!_n0.b.b.b.b.b) {
-					var r = _n0.a;
-					var _n3 = _n0.b;
-					var g = _n3.a;
-					var _n4 = _n3.b;
-					var b = _n4.a;
-					var _n5 = _n4.b;
-					var a = _n5.a;
-					return A5(
-						author$project$Color$validHex,
-						str,
-						_Utils_Tuple2(r, r),
-						_Utils_Tuple2(g, g),
-						_Utils_Tuple2(b, b),
-						_Utils_Tuple2(a, a));
-				} else {
-					if (_n0.b.b.b.b.b.b) {
-						if (!_n0.b.b.b.b.b.b.b) {
-							var r1 = _n0.a;
-							var _n6 = _n0.b;
-							var r2 = _n6.a;
-							var _n7 = _n6.b;
-							var g1 = _n7.a;
-							var _n8 = _n7.b;
-							var g2 = _n8.a;
-							var _n9 = _n8.b;
-							var b1 = _n9.a;
-							var _n10 = _n9.b;
-							var b2 = _n10.a;
-							return A5(
-								author$project$Color$validHex,
-								str,
-								_Utils_Tuple2(r1, r2),
-								_Utils_Tuple2(g1, g2),
-								_Utils_Tuple2(b1, b2),
-								_Utils_Tuple2(
-									_Utils_chr('f'),
-									_Utils_chr('f')));
-						} else {
-							if (_n0.b.b.b.b.b.b.b.b && (!_n0.b.b.b.b.b.b.b.b.b)) {
-								var r1 = _n0.a;
-								var _n11 = _n0.b;
-								var r2 = _n11.a;
-								var _n12 = _n11.b;
-								var g1 = _n12.a;
-								var _n13 = _n12.b;
-								var g2 = _n13.a;
-								var _n14 = _n13.b;
-								var b1 = _n14.a;
-								var _n15 = _n14.b;
-								var b2 = _n15.a;
-								var _n16 = _n15.b;
-								var a1 = _n16.a;
-								var _n17 = _n16.b;
-								var a2 = _n17.a;
-								return A5(
-									author$project$Color$validHex,
-									str,
-									_Utils_Tuple2(r1, r2),
-									_Utils_Tuple2(g1, g2),
-									_Utils_Tuple2(b1, b2),
-									_Utils_Tuple2(a1, a2));
-							} else {
-								break _n0$4;
-							}
-						}
-					} else {
-						break _n0$4;
-					}
-				}
-			}
-		} else {
-			break _n0$4;
-		}
-	}
-	return author$project$Color$erroneousHex(str);
-};
-var author$project$Color$RGBA = F4(
-	function (a, b, c, d) {
-		return {$: 'RGBA', a: a, b: b, c: c, d: d};
-	});
-var author$project$Color$rgba = author$project$Color$RGBA;
-var author$project$Color$hexToColor = function (string) {
-	var c = author$project$Color$hex(string);
-	return A4(author$project$Color$rgba, c.red, c.green, c.blue, c.alpha);
-};
-var elm$core$Basics$apL = F2(
-	function (f, x) {
-		return f(x);
-	});
-var elm$core$Basics$idiv = _Basics_idiv;
-var elm$core$Basics$remainderBy = _Basics_remainderBy;
-var elm$core$Char$fromCode = _Char_fromCode;
-var elm$core$String$fromInt = _String_fromNumber;
-var author$project$Color$toRadix = function (n) {
-	var getChr = function (c) {
-		return (c < 10) ? elm$core$String$fromInt(c) : elm$core$String$fromChar(
-			elm$core$Char$fromCode(87 + c));
-	};
-	var result = (n < 16) ? getChr(n) : _Utils_ap(
-		author$project$Color$toRadix((n / 16) | 0),
-		getChr(n % 16));
-	return result;
-};
-var elm$core$Basics$le = _Utils_le;
-var elm$core$Bitwise$and = _Bitwise_and;
-var elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
-var elm$core$String$repeatHelp = F3(
-	function (n, chunk, result) {
-		return (n <= 0) ? result : A3(
-			elm$core$String$repeatHelp,
-			n >> 1,
-			_Utils_ap(chunk, chunk),
-			(!(n & 1)) ? result : _Utils_ap(result, chunk));
-	});
-var elm$core$String$repeat = F2(
-	function (n, chunk) {
-		return A3(elm$core$String$repeatHelp, n, chunk, '');
-	});
-var elm$core$String$padLeft = F3(
-	function (n, _char, string) {
-		return _Utils_ap(
-			A2(
-				elm$core$String$repeat,
-				n - elm$core$String$length(string),
-				elm$core$String$fromChar(_char)),
-			string);
-	});
-var author$project$Color$toHex = A2(
-	elm$core$Basics$composeR,
-	author$project$Color$toRadix,
-	A2(
-		elm$core$String$padLeft,
-		2,
-		_Utils_chr('0')));
-var elm$core$Basics$gt = _Utils_gt;
 var elm$core$List$reverse = function (list) {
 	return A3(elm$core$List$foldl, elm$core$List$cons, _List_Nil, list);
 };
-var elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
-			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							elm$core$List$foldl,
-							fn,
-							acc,
-							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
-			}
-		}
-	});
-var elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
-	});
-var elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
-var author$project$Color$colorToHex = function (cl) {
-	var _n0 = author$project$Color$toRgb(cl);
-	var red = _n0.red;
-	var green = _n0.green;
-	var blue = _n0.blue;
-	return A2(
-		elm$core$String$join,
-		'',
-		A2(
-			elm$core$List$cons,
-			'#',
-			A2(
-				elm$core$List$map,
-				author$project$Color$toHex,
-				_List_fromArray(
-					[red, green, blue]))));
-};
-var author$project$Color$HSLA = F4(
-	function (a, b, c, d) {
-		return {$: 'HSLA', a: a, b: b, c: c, d: d};
-	});
-var elm$core$Basics$turns = function (angleInTurns) {
-	return (2 * elm$core$Basics$pi) * angleInTurns;
-};
-var author$project$Color$hsla = F4(
-	function (hue, saturation, lightness, alpha) {
-		return A4(
-			author$project$Color$HSLA,
-			hue - elm$core$Basics$turns(
-				elm$core$Basics$floor(hue / (2 * elm$core$Basics$pi))),
-			saturation,
-			lightness,
-			alpha);
-	});
-var author$project$Color$hsl = F3(
-	function (hue, saturation, lightness) {
-		return A4(author$project$Color$hsla, hue, saturation, lightness, 1);
-	});
-var author$project$Color$hsl2 = F3(
-	function (h2, s2, l2) {
-		return A3(
-			author$project$Color$hsl,
-			elm$core$Basics$degrees(h2),
-			s2 / 100,
-			l2 / 100);
-	});
-var author$project$Color$hsl2ToString = F3(
-	function (h2, s2, l2) {
-		return author$project$Color$colorToHex(
-			A3(author$project$Color$hsl2, h2, s2, l2));
-	});
-var author$project$Framework$Configuration$bulmaColor = {
-	black: A3(author$project$Color$hsl2ToString, 0, 0, 4),
-	black_bis: A3(author$project$Color$hsl2ToString, 0, 0, 7),
-	black_ter: A3(author$project$Color$hsl2ToString, 0, 0, 14),
-	blue: A3(author$project$Color$hsl2ToString, 217, 71, 53),
-	cyan: A3(author$project$Color$hsl2ToString, 204, 86, 53),
-	green: A3(author$project$Color$hsl2ToString, 141, 71, 48),
-	grey: A3(author$project$Color$hsl2ToString, 0, 0, 48),
-	grey_dark: A3(author$project$Color$hsl2ToString, 0, 0, 29),
-	grey_darker: A3(author$project$Color$hsl2ToString, 0, 0, 21),
-	grey_light: A3(author$project$Color$hsl2ToString, 0, 0, 71),
-	grey_lighter: A3(author$project$Color$hsl2ToString, 0, 0, 86),
-	orange: A3(author$project$Color$hsl2ToString, 14, 100, 53),
-	purple: A3(author$project$Color$hsl2ToString, 271, 100, 71),
-	red: A3(author$project$Color$hsl2ToString, 348, 100, 61),
-	turquoise: A3(author$project$Color$hsl2ToString, 171, 100, 41),
-	white: A3(author$project$Color$hsl2ToString, 0, 0, 100),
-	white_bis: A3(author$project$Color$hsl2ToString, 0, 0, 98),
-	white_ter: A3(author$project$Color$hsl2ToString, 0, 0, 96),
-	yellow: A3(author$project$Color$hsl2ToString, 48, 100, 67)
-};
-var author$project$Framework$Configuration$bulmaSizes = {size1: '3.00', size2: '2.50', size3: '2.00', size4: '1.50', size5: '1.25', size6: '1.00', size7: '0.75'};
-var author$project$Framework$Configuration$findColorInvert = function (color) {
-	return '#000000';
-};
-var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
-var elm$core$Dict$Black = {$: 'Black'};
-var elm$core$Dict$RBNode_elm_builtin = F5(
-	function (a, b, c, d, e) {
-		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
-	});
-var elm$core$Basics$compare = _Utils_compare;
-var elm$core$Dict$Red = {$: 'Red'};
-var elm$core$Dict$balance = F5(
-	function (color, key, value, left, right) {
-		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
-			var _n1 = right.a;
-			var rK = right.b;
-			var rV = right.c;
-			var rLeft = right.d;
-			var rRight = right.e;
-			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
-				var _n3 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var lLeft = left.d;
-				var lRight = left.e;
-				return A5(
-					elm$core$Dict$RBNode_elm_builtin,
-					elm$core$Dict$Red,
-					key,
-					value,
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, lK, lV, lLeft, lRight),
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					elm$core$Dict$RBNode_elm_builtin,
-					color,
-					rK,
-					rV,
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, left, rLeft),
-					rRight);
-			}
-		} else {
-			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
-				var _n5 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var _n6 = left.d;
-				var _n7 = _n6.a;
-				var llK = _n6.b;
-				var llV = _n6.c;
-				var llLeft = _n6.d;
-				var llRight = _n6.e;
-				var lRight = left.e;
-				return A5(
-					elm$core$Dict$RBNode_elm_builtin,
-					elm$core$Dict$Red,
-					lK,
-					lV,
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, llK, llV, llLeft, llRight),
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, key, value, lRight, right));
-			} else {
-				return A5(elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
-			}
-		}
-	});
-var elm$core$Dict$insertHelp = F3(
-	function (key, value, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, elm$core$Dict$RBEmpty_elm_builtin, elm$core$Dict$RBEmpty_elm_builtin);
-		} else {
-			var nColor = dict.a;
-			var nKey = dict.b;
-			var nValue = dict.c;
-			var nLeft = dict.d;
-			var nRight = dict.e;
-			var _n1 = A2(elm$core$Basics$compare, key, nKey);
-			switch (_n1.$) {
-				case 'LT':
-					return A5(
-						elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						A3(elm$core$Dict$insertHelp, key, value, nLeft),
-						nRight);
-				case 'EQ':
-					return A5(elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
-				default:
-					return A5(
-						elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						nLeft,
-						A3(elm$core$Dict$insertHelp, key, value, nRight));
-			}
-		}
-	});
-var elm$core$Dict$insert = F3(
-	function (key, value, dict) {
-		var _n0 = A3(elm$core$Dict$insertHelp, key, value, dict);
-		if ((_n0.$ === 'RBNode_elm_builtin') && (_n0.a.$ === 'Red')) {
-			var _n1 = _n0.a;
-			var k = _n0.b;
-			var v = _n0.c;
-			var l = _n0.d;
-			var r = _n0.e;
-			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, k, v, l, r);
-		} else {
-			var x = _n0;
-			return x;
-		}
-	});
-var elm$core$Dict$fromList = function (assocs) {
-	return A3(
-		elm$core$List$foldl,
-		F2(
-			function (_n0, dict) {
-				var key = _n0.a;
-				var value = _n0.b;
-				return A3(elm$core$Dict$insert, key, value, dict);
-			}),
-		elm$core$Dict$empty,
-		assocs);
-};
-var author$project$Framework$Configuration$configuration = elm$core$Dict$fromList(
-	_List_fromArray(
-		[
-			_Utils_Tuple2('black', author$project$Framework$Configuration$bulmaColor.black),
-			_Utils_Tuple2('black_bis', author$project$Framework$Configuration$bulmaColor.black_bis),
-			_Utils_Tuple2('black_ter', author$project$Framework$Configuration$bulmaColor.black_ter),
-			_Utils_Tuple2('grey_darker', author$project$Framework$Configuration$bulmaColor.grey_darker),
-			_Utils_Tuple2('grey_dark', author$project$Framework$Configuration$bulmaColor.grey_dark),
-			_Utils_Tuple2('grey', author$project$Framework$Configuration$bulmaColor.grey),
-			_Utils_Tuple2('grey_light', author$project$Framework$Configuration$bulmaColor.grey_light),
-			_Utils_Tuple2('grey_lighter', author$project$Framework$Configuration$bulmaColor.grey_lighter),
-			_Utils_Tuple2('white_ter', author$project$Framework$Configuration$bulmaColor.white_ter),
-			_Utils_Tuple2('white_bis', author$project$Framework$Configuration$bulmaColor.white_bis),
-			_Utils_Tuple2('white', author$project$Framework$Configuration$bulmaColor.white),
-			_Utils_Tuple2('orange', author$project$Framework$Configuration$bulmaColor.orange),
-			_Utils_Tuple2('yellow', author$project$Framework$Configuration$bulmaColor.yellow),
-			_Utils_Tuple2('green', author$project$Framework$Configuration$bulmaColor.green),
-			_Utils_Tuple2('turquoise', author$project$Framework$Configuration$bulmaColor.turquoise),
-			_Utils_Tuple2('cyan', author$project$Framework$Configuration$bulmaColor.cyan),
-			_Utils_Tuple2('blue', author$project$Framework$Configuration$bulmaColor.blue),
-			_Utils_Tuple2('purple', author$project$Framework$Configuration$bulmaColor.purple),
-			_Utils_Tuple2('red', author$project$Framework$Configuration$bulmaColor.red),
-			_Utils_Tuple2('font_url', 'https://fonts.googleapis.com/css?family=Noto+Sans'),
-			_Utils_Tuple2('font_typeface', 'Noto Sans'),
-			_Utils_Tuple2('font_typeface_fallback', 'sans-serif'),
-			_Utils_Tuple2('size1', author$project$Framework$Configuration$bulmaSizes.size1),
-			_Utils_Tuple2('size2', author$project$Framework$Configuration$bulmaSizes.size2),
-			_Utils_Tuple2('size3', author$project$Framework$Configuration$bulmaSizes.size3),
-			_Utils_Tuple2('size4', author$project$Framework$Configuration$bulmaSizes.size4),
-			_Utils_Tuple2('size5', author$project$Framework$Configuration$bulmaSizes.size5),
-			_Utils_Tuple2('size6', author$project$Framework$Configuration$bulmaSizes.size6),
-			_Utils_Tuple2('size7', author$project$Framework$Configuration$bulmaSizes.size7),
-			_Utils_Tuple2('primary', author$project$Framework$Configuration$bulmaColor.turquoise),
-			_Utils_Tuple2('info', author$project$Framework$Configuration$bulmaColor.cyan),
-			_Utils_Tuple2('success', author$project$Framework$Configuration$bulmaColor.green),
-			_Utils_Tuple2('warning', author$project$Framework$Configuration$bulmaColor.yellow),
-			_Utils_Tuple2('danger', author$project$Framework$Configuration$bulmaColor.red),
-			_Utils_Tuple2('light', author$project$Framework$Configuration$bulmaColor.white_ter),
-			_Utils_Tuple2('dark', author$project$Framework$Configuration$bulmaColor.grey_darker),
-			_Utils_Tuple2('background', author$project$Framework$Configuration$bulmaColor.white_ter),
-			_Utils_Tuple2('border', author$project$Framework$Configuration$bulmaColor.grey_lighter),
-			_Utils_Tuple2('border-hover', author$project$Framework$Configuration$bulmaColor.grey_light),
-			_Utils_Tuple2('text', author$project$Framework$Configuration$bulmaColor.grey_dark),
-			_Utils_Tuple2('text-light', author$project$Framework$Configuration$bulmaColor.grey),
-			_Utils_Tuple2('text-strong', author$project$Framework$Configuration$bulmaColor.grey_darker),
-			_Utils_Tuple2('code', author$project$Framework$Configuration$bulmaColor.red),
-			_Utils_Tuple2('code-background', author$project$Framework$Configuration$bulmaColor.white_ter),
-			_Utils_Tuple2('pre', author$project$Framework$Configuration$bulmaColor.grey_dark),
-			_Utils_Tuple2('pre-background', author$project$Framework$Configuration$bulmaColor.white_ter),
-			_Utils_Tuple2('link', author$project$Framework$Configuration$bulmaColor.blue),
-			_Utils_Tuple2(
-			'link_invert',
-			author$project$Framework$Configuration$findColorInvert(author$project$Framework$Configuration$bulmaColor.blue)),
-			_Utils_Tuple2('link_visited', author$project$Framework$Configuration$bulmaColor.purple),
-			_Utils_Tuple2('link_hover', author$project$Framework$Configuration$bulmaColor.grey_darker),
-			_Utils_Tuple2('link_hover_border', author$project$Framework$Configuration$bulmaColor.grey_light),
-			_Utils_Tuple2('link_focus', author$project$Framework$Configuration$bulmaColor.grey_darker),
-			_Utils_Tuple2('link_focus_border', author$project$Framework$Configuration$bulmaColor.blue),
-			_Utils_Tuple2('link_active', author$project$Framework$Configuration$bulmaColor.grey_darker),
-			_Utils_Tuple2('link_active_border', author$project$Framework$Configuration$bulmaColor.grey_dark),
-			_Utils_Tuple2('size_small', author$project$Framework$Configuration$bulmaSizes.size7),
-			_Utils_Tuple2('size_normal', author$project$Framework$Configuration$bulmaSizes.size6),
-			_Utils_Tuple2('size_medium', author$project$Framework$Configuration$bulmaSizes.size5),
-			_Utils_Tuple2('size_large', author$project$Framework$Configuration$bulmaSizes.size4),
-			_Utils_Tuple2('moveDownPlaceHolderLarge', '31'),
-			_Utils_Tuple2('moveDownPlaceHolderSmall', '30'),
-			_Utils_Tuple2('transparent', '#ffffff00'),
-			_Utils_Tuple2('muted', author$project$Framework$Configuration$bulmaColor.grey_light),
-			_Utils_Tuple2('buttonFontSmall', '12'),
-			_Utils_Tuple2('buttonFontDefault', '16'),
-			_Utils_Tuple2('buttonFontMedium', '20'),
-			_Utils_Tuple2('buttonFontLarge', '24'),
-			_Utils_Tuple2('buttonFontJumbo', '16'),
-			_Utils_Tuple2('buttonPaddingXSmall', '9'),
-			_Utils_Tuple2('buttonPaddingYSmall', '3'),
-			_Utils_Tuple2('buttonPaddingXDefault', '12'),
-			_Utils_Tuple2('buttonPaddingYDefault', '5'),
-			_Utils_Tuple2('buttonPaddingXMedium', '15'),
-			_Utils_Tuple2('buttonPaddingYMedium', '7'),
-			_Utils_Tuple2('buttonPaddingXLarge', '18'),
-			_Utils_Tuple2('buttonPaddingYLarge', '9'),
-			_Utils_Tuple2('buttonPaddingXJumbo', '24'),
-			_Utils_Tuple2('buttonPaddingYJumbo', '24')
-		]));
-var elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _n1 = A2(elm$core$Basics$compare, targetKey, key);
-				switch (_n1.$) {
-					case 'LT':
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 'EQ':
-						return elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
-		}
-	});
-var author$project$Framework$Configuration$getValue = F3(
-	function (key, original, replacement) {
-		var repl = A2(elm$core$Dict$get, key, replacement);
-		var orig = A2(elm$core$Dict$get, key, original);
-		if (repl.$ === 'Just') {
-			var value = repl.a;
-			return elm$core$Maybe$Just(value);
-		} else {
-			if (orig.$ === 'Just') {
-				var value = orig.a;
-				return elm$core$Maybe$Just(value);
-			} else {
-				return elm$core$Maybe$Nothing;
-			}
-		}
-	});
-var author$project$MyStyle$configuration = elm$core$Dict$fromList(_List_Nil);
-var author$project$Framework$Configuration$getString = function (key) {
-	return A2(
-		elm$core$Maybe$withDefault,
-		'',
-		A3(author$project$Framework$Configuration$getValue, key, author$project$Framework$Configuration$configuration, author$project$MyStyle$configuration));
-};
-var author$project$Framework$Configuration$getColor = function (key) {
-	var value = author$project$Framework$Configuration$getString(key);
-	return author$project$Color$hexToColor(value);
-};
-var elm$core$String$toFloat = _String_toFloat;
-var author$project$Framework$Configuration$getFloat = function (key) {
-	var _n0 = elm$core$String$toFloat(
-		author$project$Framework$Configuration$getString(key));
-	if (_n0.$ === 'Just') {
-		var value2 = _n0.a;
-		return value2;
-	} else {
-		return 0;
-	}
-};
-var author$project$Framework$Configuration$getInt = function (key) {
-	return elm$core$Basics$round(
-		author$project$Framework$Configuration$getFloat(key));
-};
-var mdgriffith$elm_ui$Internal$Model$Monospace = {$: 'Monospace'};
-var mdgriffith$elm_ui$Element$Font$monospace = mdgriffith$elm_ui$Internal$Model$Monospace;
-var mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
-var mdgriffith$elm_ui$Element$Font$sansSerif = mdgriffith$elm_ui$Internal$Model$SansSerif;
-var mdgriffith$elm_ui$Internal$Model$Serif = {$: 'Serif'};
-var mdgriffith$elm_ui$Element$Font$serif = mdgriffith$elm_ui$Internal$Model$Serif;
-var author$project$Framework$Configuration$getTypeface = function (key) {
-	var value = author$project$Framework$Configuration$getString(key);
-	return (value === 'sans-serif') ? mdgriffith$elm_ui$Element$Font$sansSerif : ((value === 'monospace') ? mdgriffith$elm_ui$Element$Font$monospace : ((value === 'cursive') ? mdgriffith$elm_ui$Element$Font$serif : mdgriffith$elm_ui$Element$Font$serif));
-};
-var author$project$Framework$Configuration$conf = {
-	button: {
-		fontDefault: author$project$Framework$Configuration$getInt('buttonFontDefault'),
-		fontJumbo: author$project$Framework$Configuration$getInt('buttonFontJumbo'),
-		fontLarge: author$project$Framework$Configuration$getInt('buttonFontLarge'),
-		fontMedium: author$project$Framework$Configuration$getInt('buttonFontMedium'),
-		fontSmall: author$project$Framework$Configuration$getInt('buttonFontSmall'),
-		paddingXDefault: author$project$Framework$Configuration$getInt('buttonPaddingXDefault'),
-		paddingXJumbo: author$project$Framework$Configuration$getInt('buttonPaddingXJumbo'),
-		paddingXLarge: author$project$Framework$Configuration$getInt('buttonPaddingXLarge'),
-		paddingXMedium: author$project$Framework$Configuration$getInt('buttonPaddingXMedium'),
-		paddingXSmall: author$project$Framework$Configuration$getInt('buttonPaddingXSmall'),
-		paddingYDefault: author$project$Framework$Configuration$getInt('buttonPaddingYDefault'),
-		paddingYJumbo: author$project$Framework$Configuration$getInt('buttonPaddingYJumbo'),
-		paddingYLarge: author$project$Framework$Configuration$getInt('buttonPaddingYLarge'),
-		paddingYMedium: author$project$Framework$Configuration$getInt('buttonPaddingYMedium'),
-		paddingYSmall: author$project$Framework$Configuration$getInt('buttonPaddingYSmall')
-	},
-	color: {
-		background: author$project$Framework$Configuration$getColor('background'),
-		black: author$project$Framework$Configuration$getColor('black'),
-		black_bis: author$project$Framework$Configuration$getColor('black_bis'),
-		black_ter: author$project$Framework$Configuration$getColor('black_ter'),
-		blue: author$project$Framework$Configuration$getColor('blue'),
-		border: author$project$Framework$Configuration$getColor('border'),
-		border_hover: author$project$Framework$Configuration$getColor('border_hover'),
-		code: author$project$Framework$Configuration$getColor('code'),
-		code_background: author$project$Framework$Configuration$getColor('code_background'),
-		cyan: author$project$Framework$Configuration$getColor('cyan'),
-		danger: author$project$Framework$Configuration$getColor('danger'),
-		dark: author$project$Framework$Configuration$getColor('dark'),
-		green: author$project$Framework$Configuration$getColor('green'),
-		grey: author$project$Framework$Configuration$getColor('grey'),
-		grey_dark: author$project$Framework$Configuration$getColor('grey_dark'),
-		grey_darker: author$project$Framework$Configuration$getColor('grey_darker'),
-		grey_light: author$project$Framework$Configuration$getColor('grey_light'),
-		grey_lighter: author$project$Framework$Configuration$getColor('grey_lighter'),
-		info: author$project$Framework$Configuration$getColor('info'),
-		light: author$project$Framework$Configuration$getColor('light'),
-		link: author$project$Framework$Configuration$getColor('link'),
-		link_active: author$project$Framework$Configuration$getColor('link_active'),
-		link_active_border: author$project$Framework$Configuration$getColor('link_active_border'),
-		link_focus: author$project$Framework$Configuration$getColor('link_focus'),
-		link_focus_border: author$project$Framework$Configuration$getColor('link_focus_border'),
-		link_hover: author$project$Framework$Configuration$getColor('link_hover'),
-		link_hover_border: author$project$Framework$Configuration$getColor('link_hover_border'),
-		link_invert: author$project$Framework$Configuration$getColor('link_invert'),
-		link_visited: author$project$Framework$Configuration$getColor('link_visited'),
-		muted: author$project$Framework$Configuration$getColor('muted'),
-		orange: author$project$Framework$Configuration$getColor('orange'),
-		pre: author$project$Framework$Configuration$getColor('pre'),
-		pre_background: author$project$Framework$Configuration$getColor('pre_background'),
-		primary: author$project$Framework$Configuration$getColor('primary'),
-		purple: author$project$Framework$Configuration$getColor('purple'),
-		red: author$project$Framework$Configuration$getColor('red'),
-		success: author$project$Framework$Configuration$getColor('success'),
-		text: author$project$Framework$Configuration$getColor('text'),
-		text_light: author$project$Framework$Configuration$getColor('text_light'),
-		text_strong: author$project$Framework$Configuration$getColor('text_strong'),
-		transparent: author$project$Framework$Configuration$getColor('transparent'),
-		turquoise: author$project$Framework$Configuration$getColor('turquoise'),
-		warning: author$project$Framework$Configuration$getColor('warning'),
-		white: author$project$Framework$Configuration$getColor('white'),
-		white_bis: author$project$Framework$Configuration$getColor('white_bis'),
-		white_ter: author$project$Framework$Configuration$getColor('white_ter'),
-		yellow: author$project$Framework$Configuration$getColor('yellow')
-	},
-	font: {
-		typeface: author$project$Framework$Configuration$getString('font_typeface'),
-		typefaceFallback: author$project$Framework$Configuration$getTypeface('font_typeface_fallback'),
-		url: author$project$Framework$Configuration$getString('font_url')
-	},
-	moveDownPlaceHolder: {
-		large: author$project$Framework$Configuration$getFloat('moveDownPlaceHolderLarge'),
-		small: author$project$Framework$Configuration$getFloat('moveDownPlaceHolderSmall')
-	},
-	size: {
-		size1: author$project$Framework$Configuration$getFloat('size1'),
-		size2: author$project$Framework$Configuration$getFloat('size2'),
-		size3: author$project$Framework$Configuration$getFloat('size3'),
-		size4: author$project$Framework$Configuration$getFloat('size4'),
-		size5: author$project$Framework$Configuration$getFloat('size5'),
-		size6: author$project$Framework$Configuration$getFloat('size6'),
-		size7: author$project$Framework$Configuration$getFloat('size7')
-	}
-};
-var author$project$Framework$Color$grey_lighter = author$project$Framework$Configuration$conf.color.grey_lighter;
-var author$project$Framework$Button$colorBorderDefault = author$project$Framework$Color$grey_lighter;
-var author$project$Framework$Color$white = author$project$Framework$Configuration$conf.color.white;
-var author$project$Framework$Button$colorDefault = author$project$Framework$Color$white;
-var author$project$Framework$Button$SizeJumbo = {$: 'SizeJumbo'};
-var author$project$Framework$Button$SizeLarge = {$: 'SizeLarge'};
-var author$project$Framework$Button$SizeMedium = {$: 'SizeMedium'};
-var author$project$Framework$Button$SizeSmall = {$: 'SizeSmall'};
-var author$project$Framework$Button$StateLoading = {$: 'StateLoading'};
-var author$project$Framework$Button$StateOutlined = {$: 'StateOutlined'};
-var author$project$Framework$Button$StateWaiting = {$: 'StateWaiting'};
-var author$project$Framework$Color$danger = author$project$Framework$Configuration$conf.color.danger;
-var author$project$Framework$Color$info = author$project$Framework$Configuration$conf.color.info;
-var author$project$Framework$Color$muted = author$project$Framework$Configuration$conf.color.muted;
-var author$project$Framework$Color$primary = author$project$Framework$Configuration$conf.color.primary;
-var author$project$Framework$Color$success = author$project$Framework$Configuration$conf.color.success;
-var author$project$Framework$Color$warning = author$project$Framework$Configuration$conf.color.warning;
-var author$project$Framework$Button$processConf = F2(
-	function (modifier, confButton) {
-		switch (modifier.$) {
-			case 'Muted':
-				return _Utils_update(
-					confButton,
-					{color: author$project$Framework$Color$muted});
-			case 'Primary':
-				return _Utils_update(
-					confButton,
-					{color: author$project$Framework$Color$primary});
-			case 'Success':
-				return _Utils_update(
-					confButton,
-					{color: author$project$Framework$Color$success});
-			case 'Info':
-				return _Utils_update(
-					confButton,
-					{color: author$project$Framework$Color$info});
-			case 'Warning':
-				return _Utils_update(
-					confButton,
-					{color: author$project$Framework$Color$warning});
-			case 'Danger':
-				return _Utils_update(
-					confButton,
-					{color: author$project$Framework$Color$danger});
-			case 'Small':
-				return _Utils_update(
-					confButton,
-					{size: author$project$Framework$Button$SizeSmall});
-			case 'Medium':
-				return _Utils_update(
-					confButton,
-					{size: author$project$Framework$Button$SizeMedium});
-			case 'Large':
-				return _Utils_update(
-					confButton,
-					{size: author$project$Framework$Button$SizeLarge});
-			case 'Jumbo':
-				return _Utils_update(
-					confButton,
-					{size: author$project$Framework$Button$SizeJumbo});
-			case 'Outlined':
-				return _Utils_update(
-					confButton,
-					{state: author$project$Framework$Button$StateOutlined});
-			case 'Loading':
-				return _Utils_update(
-					confButton,
-					{state: author$project$Framework$Button$StateLoading});
-			case 'Waiting':
-				return _Utils_update(
-					confButton,
-					{state: author$project$Framework$Button$StateWaiting});
-			default:
-				return _Utils_update(
-					confButton,
-					{state: author$project$Framework$Button$StateDisabled});
-		}
-	});
-var author$project$Framework$Button$toButtonPadding = function (size) {
-	switch (size.$) {
-		case 'SizeSmall':
-			return _Utils_Tuple2(author$project$Framework$Configuration$conf.button.paddingXSmall, author$project$Framework$Configuration$conf.button.paddingYSmall);
-		case 'SizeDefault':
-			return _Utils_Tuple2(author$project$Framework$Configuration$conf.button.paddingXDefault, author$project$Framework$Configuration$conf.button.paddingYDefault);
-		case 'SizeMedium':
-			return _Utils_Tuple2(author$project$Framework$Configuration$conf.button.paddingXMedium, author$project$Framework$Configuration$conf.button.paddingYMedium);
-		case 'SizeLarge':
-			return _Utils_Tuple2(author$project$Framework$Configuration$conf.button.paddingXLarge, author$project$Framework$Configuration$conf.button.paddingYLarge);
-		default:
-			return _Utils_Tuple2(author$project$Framework$Configuration$conf.button.paddingXJumbo, author$project$Framework$Configuration$conf.button.paddingYJumbo);
-	}
-};
-var author$project$Framework$Button$toPx = function (size) {
-	switch (size.$) {
-		case 'SizeSmall':
-			return author$project$Framework$Configuration$conf.button.fontSmall;
-		case 'SizeDefault':
-			return author$project$Framework$Configuration$conf.button.fontDefault;
-		case 'SizeMedium':
-			return author$project$Framework$Configuration$conf.button.fontMedium;
-		case 'SizeLarge':
-			return author$project$Framework$Configuration$conf.button.fontLarge;
-		default:
-			return author$project$Framework$Configuration$conf.button.fontJumbo;
-	}
-};
-var author$project$Framework$Color$disabledButtonBackground = author$project$Framework$Configuration$conf.color.grey_lighter;
-var author$project$Framework$Color$disabledButtonFont = author$project$Framework$Configuration$conf.color.grey_light;
-var author$project$Framework$Color$grey_dark = author$project$Framework$Configuration$conf.color.grey_dark;
-var author$project$Framework$Color$transparent = author$project$Framework$Configuration$conf.color.transparent;
-var author$project$Framework$Spinner$Rotation = {$: 'Rotation'};
-var author$project$Framework$Spinner$ThreeCircles = {$: 'ThreeCircles'};
-var elm$core$Basics$identity = function (x) {
-	return x;
-};
-var elm$core$Basics$False = {$: 'False'};
-var elm$core$Basics$True = {$: 'True'};
-var elm$core$Result$isOk = function (result) {
-	if (result.$ === 'Ok') {
-		return true;
-	} else {
-		return false;
-	}
-};
-var elm$core$Array$branchFactor = 32;
-var elm$core$Array$Array_elm_builtin = F4(
-	function (a, b, c, d) {
-		return {$: 'Array_elm_builtin', a: a, b: b, c: c, d: d};
-	});
-var elm$core$Basics$ceiling = _Basics_ceiling;
-var elm$core$Basics$logBase = F2(
-	function (base, number) {
-		return _Basics_log(number) / _Basics_log(base);
-	});
-var elm$core$Array$shiftStep = elm$core$Basics$ceiling(
-	A2(elm$core$Basics$logBase, 2, elm$core$Array$branchFactor));
-var elm$core$Elm$JsArray$empty = _JsArray_empty;
-var elm$core$Array$empty = A4(elm$core$Array$Array_elm_builtin, 0, elm$core$Array$shiftStep, elm$core$Elm$JsArray$empty, elm$core$Elm$JsArray$empty);
-var elm$core$Array$Leaf = function (a) {
-	return {$: 'Leaf', a: a};
-};
-var elm$core$Array$SubTree = function (a) {
-	return {$: 'SubTree', a: a};
-};
-var elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
 var elm$core$Array$compressNodes = F2(
 	function (nodes, acc) {
 		compressNodes:
@@ -5275,6 +4070,11 @@ var elm$core$Array$compressNodes = F2(
 			}
 		}
 	});
+var elm$core$Basics$apR = F2(
+	function (x, f) {
+		return f(x);
+	});
+var elm$core$Basics$eq = _Utils_equal;
 var elm$core$Tuple$first = function (_n0) {
 	var x = _n0.a;
 	return x;
@@ -5295,10 +4095,15 @@ var elm$core$Array$treeFromBuilder = F2(
 			}
 		}
 	});
+var elm$core$Basics$add = _Basics_add;
+var elm$core$Basics$floor = _Basics_floor;
+var elm$core$Basics$gt = _Utils_gt;
 var elm$core$Basics$max = F2(
 	function (x, y) {
 		return (_Utils_cmp(x, y) > 0) ? x : y;
 	});
+var elm$core$Basics$mul = _Basics_mul;
+var elm$core$Basics$sub = _Basics_sub;
 var elm$core$Elm$JsArray$length = _JsArray_length;
 var elm$core$Array$builderToArray = F2(
 	function (reverseNodeList, builder) {
@@ -5323,6 +4128,8 @@ var elm$core$Array$builderToArray = F2(
 				builder.tail);
 		}
 	});
+var elm$core$Basics$idiv = _Basics_idiv;
+var elm$core$Basics$lt = _Utils_lt;
 var elm$core$Elm$JsArray$initialize = _JsArray_initialize;
 var elm$core$Array$initializeHelp = F5(
 	function (fn, fromIndex, len, nodeList, tail) {
@@ -5350,6 +4157,8 @@ var elm$core$Array$initializeHelp = F5(
 			}
 		}
 	});
+var elm$core$Basics$le = _Utils_le;
+var elm$core$Basics$remainderBy = _Basics_remainderBy;
 var elm$core$Array$initialize = F2(
 	function (len, fn) {
 		if (len <= 0) {
@@ -5361,6 +4170,15 @@ var elm$core$Array$initialize = F2(
 			return A5(elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
 		}
 	});
+var elm$core$Maybe$Just = function (a) {
+	return {$: 'Just', a: a};
+};
+var elm$core$Result$Err = function (a) {
+	return {$: 'Err', a: a};
+};
+var elm$core$Result$Ok = function (a) {
+	return {$: 'Ok', a: a};
+};
 var elm$json$Json$Decode$Failure = F2(
 	function (a, b) {
 		return {$: 'Failure', a: a, b: b};
@@ -5377,6 +4195,7 @@ var elm$json$Json$Decode$OneOf = function (a) {
 	return {$: 'OneOf', a: a};
 };
 var elm$core$Basics$and = _Basics_and;
+var elm$core$Basics$append = _Utils_append;
 var elm$core$Basics$or = _Basics_or;
 var elm$core$Char$toCode = _Char_toCode;
 var elm$core$Char$isLower = function (_char) {
@@ -5396,6 +4215,16 @@ var elm$core$Char$isDigit = function (_char) {
 };
 var elm$core$Char$isAlphaNum = function (_char) {
 	return elm$core$Char$isLower(_char) || (elm$core$Char$isUpper(_char) || elm$core$Char$isDigit(_char));
+};
+var elm$core$List$length = function (xs) {
+	return A3(
+		elm$core$List$foldl,
+		F2(
+			function (_n0, i) {
+				return i + 1;
+			}),
+		0,
+		xs);
 };
 var elm$core$List$map2 = _List_map2;
 var elm$core$List$rangeHelp = F3(
@@ -5431,6 +4260,14 @@ var elm$core$List$indexedMap = F2(
 			xs);
 	});
 var elm$core$String$all = _String_all;
+var elm$core$String$fromInt = _String_fromNumber;
+var elm$core$String$join = F2(
+	function (sep, chunks) {
+		return A2(
+			_String_join,
+			sep,
+			_List_toArray(chunks));
+	});
 var elm$core$String$uncons = _String_uncons;
 var elm$core$String$split = F2(
 	function (sep, string) {
@@ -5562,334 +4399,461 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
-var elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var elm$svg$Svg$animateTransform = elm$svg$Svg$trustedNode('animateTransform');
-var elm$svg$Svg$circle = elm$svg$Svg$trustedNode('circle');
-var elm$svg$Svg$defs = elm$svg$Svg$trustedNode('defs');
-var elm$svg$Svg$g = elm$svg$Svg$trustedNode('g');
-var elm$svg$Svg$linearGradient = elm$svg$Svg$trustedNode('linearGradient');
-var elm$svg$Svg$path = elm$svg$Svg$trustedNode('path');
-var elm$svg$Svg$stop = elm$svg$Svg$trustedNode('stop');
-var elm$svg$Svg$svg = elm$svg$Svg$trustedNode('svg');
-var elm$svg$Svg$Attributes$attributeName = _VirtualDom_attribute('attributeName');
-var elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
-var elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
-var elm$svg$Svg$Attributes$dur = _VirtualDom_attribute('dur');
-var elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var elm$svg$Svg$Attributes$fillRule = _VirtualDom_attribute('fill-rule');
-var elm$svg$Svg$Attributes$from = function (value) {
-	return A2(
-		_VirtualDom_attribute,
-		'from',
-		_VirtualDom_noJavaScriptUri(value));
-};
-var elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
-var elm$svg$Svg$Attributes$id = _VirtualDom_attribute('id');
-var elm$svg$Svg$Attributes$offset = _VirtualDom_attribute('offset');
-var elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
-var elm$svg$Svg$Attributes$repeatCount = _VirtualDom_attribute('repeatCount');
-var elm$svg$Svg$Attributes$stopColor = _VirtualDom_attribute('stop-color');
-var elm$svg$Svg$Attributes$stopOpacity = _VirtualDom_attribute('stop-opacity');
-var elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
-var elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
-var elm$svg$Svg$Attributes$to = function (value) {
-	return A2(
-		_VirtualDom_attribute,
-		'to',
-		_VirtualDom_noJavaScriptUri(value));
-};
-var elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var elm$svg$Svg$Attributes$type_ = _VirtualDom_attribute('type');
-var elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
-var elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
-var elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
-var elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
-var elm$svg$Svg$Attributes$xmlSpace = A2(_VirtualDom_attributeNS, 'http://www.w3.org/XML/1998/namespace', 'xml:space');
-var elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
-var elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
-var author$project$Framework$Spinner$spinnerRotationHtml = F2(
-	function (size, color) {
-		var speed = '0.6s';
-		var colorString = author$project$Color$colorToHex(color);
-		var idElement = 'id' + A2(elm$core$String$dropLeft, 1, colorString);
-		return A2(
-			elm$svg$Svg$svg,
-			_List_fromArray(
-				[
-					elm$svg$Svg$Attributes$viewBox('0 0 38 38'),
-					elm$svg$Svg$Attributes$xmlSpace('http://www.w3.org/2000/svg'),
-					elm$svg$Svg$Attributes$width(
-					elm$core$String$fromInt(size)),
-					elm$svg$Svg$Attributes$height(
-					elm$core$String$fromInt(size))
-				]),
-			_List_fromArray(
-				[
-					A2(
-					elm$svg$Svg$defs,
-					_List_Nil,
-					_List_fromArray(
-						[
-							A2(
-							elm$svg$Svg$linearGradient,
-							_List_fromArray(
-								[
-									elm$svg$Svg$Attributes$id(idElement),
-									elm$svg$Svg$Attributes$x1('8%'),
-									elm$svg$Svg$Attributes$x2('65.7%'),
-									elm$svg$Svg$Attributes$y1('0%'),
-									elm$svg$Svg$Attributes$y2('23.9%')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$svg$Svg$stop,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$offset('0%'),
-											elm$svg$Svg$Attributes$stopColor(colorString),
-											elm$svg$Svg$Attributes$stopOpacity('0')
-										]),
-									_List_Nil),
-									A2(
-									elm$svg$Svg$stop,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$offset('63.1%'),
-											elm$svg$Svg$Attributes$stopColor(colorString),
-											elm$svg$Svg$Attributes$stopOpacity('.6')
-										]),
-									_List_Nil),
-									A2(
-									elm$svg$Svg$stop,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$offset('100%'),
-											elm$svg$Svg$Attributes$stopColor(colorString)
-										]),
-									_List_Nil)
-								]))
-						])),
-					A2(
-					elm$svg$Svg$g,
-					_List_fromArray(
-						[
-							elm$svg$Svg$Attributes$fill('none'),
-							elm$svg$Svg$Attributes$fillRule('evenodd'),
-							elm$svg$Svg$Attributes$transform('translate(1 1)')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							elm$svg$Svg$path,
-							_List_fromArray(
-								[
-									elm$svg$Svg$Attributes$d('M36 18C36 8 28 0 18 0'),
-									elm$svg$Svg$Attributes$stroke('url(#' + (idElement + ')')),
-									elm$svg$Svg$Attributes$strokeWidth('2')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$svg$Svg$animateTransform,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('transform'),
-											elm$svg$Svg$Attributes$dur(speed),
-											elm$svg$Svg$Attributes$from('0 18 18'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite'),
-											elm$svg$Svg$Attributes$to('360 18 18'),
-											elm$svg$Svg$Attributes$type_('rotate')
-										]),
-									_List_Nil)
-								])),
-							A2(
-							elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									elm$svg$Svg$Attributes$cx('36'),
-									elm$svg$Svg$Attributes$cy('18'),
-									elm$svg$Svg$Attributes$fill(colorString),
-									elm$svg$Svg$Attributes$r('1')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$svg$Svg$animateTransform,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('transform'),
-											elm$svg$Svg$Attributes$dur(speed),
-											elm$svg$Svg$Attributes$from('0 18 18'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite'),
-											elm$svg$Svg$Attributes$to('360 18 18'),
-											elm$svg$Svg$Attributes$type_('rotate')
-										]),
-									_List_Nil)
-								]))
-						]))
-				]));
-	});
-var elm$svg$Svg$animate = elm$svg$Svg$trustedNode('animate');
-var elm$svg$Svg$Attributes$values = function (value) {
-	return A2(
-		_VirtualDom_attribute,
-		'values',
-		_VirtualDom_noJavaScriptUri(value));
-};
-var author$project$Framework$Spinner$spinnerThreeCirclesHtml = F2(
-	function (size, color) {
-		var colorString = author$project$Color$colorToHex(color);
-		return A2(
-			elm$svg$Svg$svg,
-			_List_fromArray(
-				[
-					elm$svg$Svg$Attributes$viewBox('10 26 44 12'),
-					elm$svg$Svg$Attributes$xmlSpace('http://www.w3.org/2000/svg'),
-					elm$svg$Svg$Attributes$height(
-					elm$core$String$fromInt(size))
-				]),
-			_List_fromArray(
-				[
-					A2(
-					elm$svg$Svg$g,
-					_List_Nil,
-					_List_fromArray(
-						[
-							A2(
-							elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									elm$svg$Svg$Attributes$cx('16'),
-									elm$svg$Svg$Attributes$cy('32'),
-									elm$svg$Svg$Attributes$strokeWidth('0'),
-									elm$svg$Svg$Attributes$r('4.26701'),
-									elm$svg$Svg$Attributes$fill(colorString)
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$svg$Svg$animate,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('fill-opacity'),
-											elm$svg$Svg$Attributes$dur('750ms'),
-											elm$svg$Svg$Attributes$values('.5;.6;.8;1;.8;.6;.5;.5'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite')
-										]),
-									_List_Nil),
-									A2(
-									elm$svg$Svg$animate,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('r'),
-											elm$svg$Svg$Attributes$dur('750ms'),
-											elm$svg$Svg$Attributes$values('3;3;4;5;6;5;4;3'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite')
-										]),
-									_List_Nil)
-								])),
-							A2(
-							elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									elm$svg$Svg$Attributes$cx('32'),
-									elm$svg$Svg$Attributes$cy('32'),
-									elm$svg$Svg$Attributes$strokeWidth('0'),
-									elm$svg$Svg$Attributes$r('5.26701'),
-									elm$svg$Svg$Attributes$fill(colorString)
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$svg$Svg$animate,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('fill-opacity'),
-											elm$svg$Svg$Attributes$dur('750ms'),
-											elm$svg$Svg$Attributes$values('.5;.5;.6;.8;1;.8;.6;.5'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite')
-										]),
-									_List_Nil),
-									A2(
-									elm$svg$Svg$animate,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('r'),
-											elm$svg$Svg$Attributes$dur('750ms'),
-											elm$svg$Svg$Attributes$values('4;3;3;4;5;6;5;4'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite')
-										]),
-									_List_Nil)
-								])),
-							A2(
-							elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									elm$svg$Svg$Attributes$cx('48'),
-									elm$svg$Svg$Attributes$cy('32'),
-									elm$svg$Svg$Attributes$strokeWidth('0'),
-									elm$svg$Svg$Attributes$r('5.73299'),
-									elm$svg$Svg$Attributes$fill(colorString)
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$svg$Svg$animate,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('fill-opacity'),
-											elm$svg$Svg$Attributes$dur('750ms'),
-											elm$svg$Svg$Attributes$values('.6;.5;.5;.6;.8;1;.8;.6'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite')
-										]),
-									_List_Nil),
-									A2(
-									elm$svg$Svg$animate,
-									_List_fromArray(
-										[
-											elm$svg$Svg$Attributes$attributeName('r'),
-											elm$svg$Svg$Attributes$dur('750ms'),
-											elm$svg$Svg$Attributes$values('5;4;3;3;4;5;6;5'),
-											elm$svg$Svg$Attributes$repeatCount('indefinite')
-										]),
-									_List_Nil)
-								]))
-						]))
-				]));
-	});
-var elm$core$Basics$always = F2(
-	function (a, _n0) {
-		return a;
-	});
-var elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
-var mdgriffith$elm_ui$Internal$Model$Unstyled = function (a) {
-	return {$: 'Unstyled', a: a};
-};
-var mdgriffith$elm_ui$Internal$Model$unstyled = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Unstyled, elm$core$Basics$always);
-var mdgriffith$elm_ui$Element$html = mdgriffith$elm_ui$Internal$Model$unstyled;
-var author$project$Framework$Spinner$spinner = F3(
-	function (sp, size, color) {
-		return mdgriffith$elm_ui$Element$html(
-			function () {
-				if (sp.$ === 'ThreeCircles') {
-					return A2(author$project$Framework$Spinner$spinnerThreeCirclesHtml, size, color);
-				} else {
-					return A2(author$project$Framework$Spinner$spinnerRotationHtml, size, color);
-				}
-			}());
-	});
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;
 };
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
+var lucamug$style_framework$Framework$Button$SizeDefault = {$: 'SizeDefault'};
+var lucamug$style_framework$Framework$Button$StateDefault = {$: 'StateDefault'};
+var lucamug$style_framework$Framework$Button$StateDisabled = {$: 'StateDisabled'};
+var mdgriffith$elm_ui$Internal$Model$Rgba = F4(
+	function (a, b, c, d) {
+		return {$: 'Rgba', a: a, b: b, c: c, d: d};
+	});
+var mdgriffith$elm_ui$Element$rgba255 = F4(
+	function (red, green, blue, a) {
+		return A4(mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, a);
+	});
+var lucamug$style_framework$Framework$ConfigurationNew$colors = {
+	black: A4(mdgriffith$elm_ui$Element$rgba255, 0, 0, 0, 1.0),
+	blackBis: A4(mdgriffith$elm_ui$Element$rgba255, 18, 18, 18, 1.0),
+	blackTer: A4(mdgriffith$elm_ui$Element$rgba255, 36, 36, 36, 1.0),
+	blue: A4(mdgriffith$elm_ui$Element$rgba255, 0, 0, 255, 1.0),
+	brown: A4(mdgriffith$elm_ui$Element$rgba255, 165, 42, 42, 1.0),
+	danger: A4(mdgriffith$elm_ui$Element$rgba255, 255, 56, 96, 1.0),
+	dark: A4(mdgriffith$elm_ui$Element$rgba255, 54, 54, 54, 1.0),
+	green: A4(mdgriffith$elm_ui$Element$rgba255, 0, 128, 0, 1.0),
+	grey: A4(mdgriffith$elm_ui$Element$rgba255, 128, 128, 128, 1.0),
+	greyDark: A4(mdgriffith$elm_ui$Element$rgba255, 74, 74, 74, 1.0),
+	greyDarker: A4(mdgriffith$elm_ui$Element$rgba255, 54, 54, 54, 1.0),
+	greyLight: A4(mdgriffith$elm_ui$Element$rgba255, 181, 181, 181, 1.0),
+	greyLighter: A4(mdgriffith$elm_ui$Element$rgba255, 219, 219, 219, 1.0),
+	info: A4(mdgriffith$elm_ui$Element$rgba255, 32, 156, 238, 1.0),
+	light: A4(mdgriffith$elm_ui$Element$rgba255, 245, 245, 245, 1.0),
+	orange: A4(mdgriffith$elm_ui$Element$rgba255, 255, 165, 0, 1.0),
+	pink: A4(mdgriffith$elm_ui$Element$rgba255, 255, 192, 203, 1.0),
+	primary: A4(mdgriffith$elm_ui$Element$rgba255, 0, 209, 178, 1.0),
+	purple: A4(mdgriffith$elm_ui$Element$rgba255, 128, 0, 128, 1.0),
+	red: A4(mdgriffith$elm_ui$Element$rgba255, 255, 0, 0, 1.0),
+	success: A4(mdgriffith$elm_ui$Element$rgba255, 35, 209, 96, 1.0),
+	warning: A4(mdgriffith$elm_ui$Element$rgba255, 255, 221, 87, 1.0),
+	white: A4(mdgriffith$elm_ui$Element$rgba255, 255, 255, 255, 1.0),
+	whiteBis: A4(mdgriffith$elm_ui$Element$rgba255, 250, 250, 250, 1.0),
+	whiteTer: A4(mdgriffith$elm_ui$Element$rgba255, 245, 245, 245, 1.0),
+	yellow: A4(mdgriffith$elm_ui$Element$rgba255, 255, 255, 0, 1.0)
+};
+var lucamug$style_framework$Framework$ColorNew$greyLighter = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter;
+var lucamug$style_framework$Framework$Button$colorBorderDefault = lucamug$style_framework$Framework$ColorNew$greyLighter;
+var lucamug$style_framework$Framework$ColorNew$white = lucamug$style_framework$Framework$ConfigurationNew$colors.white;
+var lucamug$style_framework$Framework$Button$colorDefault = lucamug$style_framework$Framework$ColorNew$white;
+var lucamug$style_framework$Framework$Button$SizeJumbo = {$: 'SizeJumbo'};
+var lucamug$style_framework$Framework$Button$SizeLarge = {$: 'SizeLarge'};
+var lucamug$style_framework$Framework$Button$SizeMedium = {$: 'SizeMedium'};
+var lucamug$style_framework$Framework$Button$SizeSmall = {$: 'SizeSmall'};
+var lucamug$style_framework$Framework$Button$StateLoading = {$: 'StateLoading'};
+var lucamug$style_framework$Framework$Button$StateOutlined = {$: 'StateOutlined'};
+var lucamug$style_framework$Framework$Button$StateWaiting = {$: 'StateWaiting'};
+var lucamug$style_framework$Framework$ColorNew$danger = lucamug$style_framework$Framework$ConfigurationNew$colors.danger;
+var lucamug$style_framework$Framework$ColorNew$info = lucamug$style_framework$Framework$ConfigurationNew$colors.info;
+var lucamug$style_framework$Framework$ColorNew$muted = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight;
+var lucamug$style_framework$Framework$ColorNew$primary = lucamug$style_framework$Framework$ConfigurationNew$colors.primary;
+var lucamug$style_framework$Framework$ColorNew$success = lucamug$style_framework$Framework$ConfigurationNew$colors.success;
+var lucamug$style_framework$Framework$ColorNew$warning = lucamug$style_framework$Framework$ConfigurationNew$colors.warning;
+var lucamug$style_framework$Framework$Button$processConf = F2(
+	function (modifier, confButton) {
+		switch (modifier.$) {
+			case 'Muted':
+				return _Utils_update(
+					confButton,
+					{color: lucamug$style_framework$Framework$ColorNew$muted});
+			case 'Primary':
+				return _Utils_update(
+					confButton,
+					{color: lucamug$style_framework$Framework$ColorNew$primary});
+			case 'Success':
+				return _Utils_update(
+					confButton,
+					{color: lucamug$style_framework$Framework$ColorNew$success});
+			case 'Info':
+				return _Utils_update(
+					confButton,
+					{color: lucamug$style_framework$Framework$ColorNew$info});
+			case 'Warning':
+				return _Utils_update(
+					confButton,
+					{color: lucamug$style_framework$Framework$ColorNew$warning});
+			case 'Danger':
+				return _Utils_update(
+					confButton,
+					{color: lucamug$style_framework$Framework$ColorNew$danger});
+			case 'Small':
+				return _Utils_update(
+					confButton,
+					{size: lucamug$style_framework$Framework$Button$SizeSmall});
+			case 'Medium':
+				return _Utils_update(
+					confButton,
+					{size: lucamug$style_framework$Framework$Button$SizeMedium});
+			case 'Large':
+				return _Utils_update(
+					confButton,
+					{size: lucamug$style_framework$Framework$Button$SizeLarge});
+			case 'Jumbo':
+				return _Utils_update(
+					confButton,
+					{size: lucamug$style_framework$Framework$Button$SizeJumbo});
+			case 'Outlined':
+				return _Utils_update(
+					confButton,
+					{state: lucamug$style_framework$Framework$Button$StateOutlined});
+			case 'Loading':
+				return _Utils_update(
+					confButton,
+					{state: lucamug$style_framework$Framework$Button$StateLoading});
+			case 'Waiting':
+				return _Utils_update(
+					confButton,
+					{state: lucamug$style_framework$Framework$Button$StateWaiting});
+			default:
+				return _Utils_update(
+					confButton,
+					{state: lucamug$style_framework$Framework$Button$StateDisabled});
+		}
+	});
+var elm$core$String$toFloat = _String_toFloat;
+var elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
+var elm$core$Dict$Black = {$: 'Black'};
+var elm$core$Dict$RBNode_elm_builtin = F5(
+	function (a, b, c, d, e) {
+		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
+	});
+var elm$core$Basics$compare = _Utils_compare;
+var elm$core$Dict$Red = {$: 'Red'};
+var elm$core$Dict$balance = F5(
+	function (color, key, value, left, right) {
+		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
+			var _n1 = right.a;
+			var rK = right.b;
+			var rV = right.c;
+			var rLeft = right.d;
+			var rRight = right.e;
+			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+				var _n3 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var lLeft = left.d;
+				var lRight = left.e;
+				return A5(
+					elm$core$Dict$RBNode_elm_builtin,
+					elm$core$Dict$Red,
+					key,
+					value,
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, lK, lV, lLeft, lRight),
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					elm$core$Dict$RBNode_elm_builtin,
+					color,
+					rK,
+					rV,
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, left, rLeft),
+					rRight);
+			}
+		} else {
+			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
+				var _n5 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var _n6 = left.d;
+				var _n7 = _n6.a;
+				var llK = _n6.b;
+				var llV = _n6.c;
+				var llLeft = _n6.d;
+				var llRight = _n6.e;
+				var lRight = left.e;
+				return A5(
+					elm$core$Dict$RBNode_elm_builtin,
+					elm$core$Dict$Red,
+					lK,
+					lV,
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, llK, llV, llLeft, llRight),
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, key, value, lRight, right));
+			} else {
+				return A5(elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+			}
+		}
+	});
+var elm$core$Dict$insertHelp = F3(
+	function (key, value, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, elm$core$Dict$RBEmpty_elm_builtin, elm$core$Dict$RBEmpty_elm_builtin);
+		} else {
+			var nColor = dict.a;
+			var nKey = dict.b;
+			var nValue = dict.c;
+			var nLeft = dict.d;
+			var nRight = dict.e;
+			var _n1 = A2(elm$core$Basics$compare, key, nKey);
+			switch (_n1.$) {
+				case 'LT':
+					return A5(
+						elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						A3(elm$core$Dict$insertHelp, key, value, nLeft),
+						nRight);
+				case 'EQ':
+					return A5(elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+				default:
+					return A5(
+						elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						nLeft,
+						A3(elm$core$Dict$insertHelp, key, value, nRight));
+			}
+		}
+	});
+var elm$core$Dict$insert = F3(
+	function (key, value, dict) {
+		var _n0 = A3(elm$core$Dict$insertHelp, key, value, dict);
+		if ((_n0.$ === 'RBNode_elm_builtin') && (_n0.a.$ === 'Red')) {
+			var _n1 = _n0.a;
+			var k = _n0.b;
+			var v = _n0.c;
+			var l = _n0.d;
+			var r = _n0.e;
+			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _n0;
+			return x;
+		}
+	});
+var elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		elm$core$List$foldl,
+		F2(
+			function (_n0, dict) {
+				var key = _n0.a;
+				var value = _n0.b;
+				return A3(elm$core$Dict$insert, key, value, dict);
+			}),
+		elm$core$Dict$empty,
+		assocs);
+};
+var lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes = {size1: '3.00', size2: '2.50', size3: '2.00', size4: '1.50', size5: '1.25', size6: '1.00', size7: '0.75'};
+var lucamug$style_framework$Framework$ConfigurationNew$configuration_ = elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2('font_url', 'https://fonts.googleapis.com/css?family=Noto+Sans'),
+			_Utils_Tuple2('font_typeface', 'Noto Sans'),
+			_Utils_Tuple2('font_typeface_fallback', 'sans-serif'),
+			_Utils_Tuple2('size1', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size1),
+			_Utils_Tuple2('size2', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size2),
+			_Utils_Tuple2('size3', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size3),
+			_Utils_Tuple2('size4', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size4),
+			_Utils_Tuple2('size5', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size5),
+			_Utils_Tuple2('size6', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size6),
+			_Utils_Tuple2('size7', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size7),
+			_Utils_Tuple2('size_small', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size7),
+			_Utils_Tuple2('size_normal', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size6),
+			_Utils_Tuple2('size_medium', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size5),
+			_Utils_Tuple2('size_large', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size4),
+			_Utils_Tuple2('moveDownPlaceHolderLarge', '31'),
+			_Utils_Tuple2('moveDownPlaceHolderSmall', '30'),
+			_Utils_Tuple2('transparent', '#ffffff00'),
+			_Utils_Tuple2('buttonFontSmall', '12'),
+			_Utils_Tuple2('buttonFontDefault', '16'),
+			_Utils_Tuple2('buttonFontMedium', '20'),
+			_Utils_Tuple2('buttonFontLarge', '24'),
+			_Utils_Tuple2('buttonFontJumbo', '16'),
+			_Utils_Tuple2('buttonPaddingXSmall', '9'),
+			_Utils_Tuple2('buttonPaddingYSmall', '3'),
+			_Utils_Tuple2('buttonPaddingXDefault', '12'),
+			_Utils_Tuple2('buttonPaddingYDefault', '5'),
+			_Utils_Tuple2('buttonPaddingXMedium', '15'),
+			_Utils_Tuple2('buttonPaddingYMedium', '7'),
+			_Utils_Tuple2('buttonPaddingXLarge', '18'),
+			_Utils_Tuple2('buttonPaddingYLarge', '9'),
+			_Utils_Tuple2('buttonPaddingXJumbo', '24'),
+			_Utils_Tuple2('buttonPaddingYJumbo', '24')
+		]));
+var elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _n1 = A2(elm$core$Basics$compare, targetKey, key);
+				switch (_n1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
+	});
+var lucamug$style_framework$Framework$ConfigurationNew$getValue = F3(
+	function (key, original, replacement) {
+		var repl = A2(elm$core$Dict$get, key, replacement);
+		var orig = A2(elm$core$Dict$get, key, original);
+		if (repl.$ === 'Just') {
+			var value = repl.a;
+			return elm$core$Maybe$Just(value);
+		} else {
+			if (orig.$ === 'Just') {
+				var value = orig.a;
+				return elm$core$Maybe$Just(value);
+			} else {
+				return elm$core$Maybe$Nothing;
+			}
+		}
+	});
+var lucamug$style_framework$MyStyle$configuration = elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2('primary', '#ood1b2')
+		]));
+var lucamug$style_framework$Framework$ConfigurationNew$getString = function (key) {
+	return A2(
+		elm$core$Maybe$withDefault,
+		'',
+		A3(lucamug$style_framework$Framework$ConfigurationNew$getValue, key, lucamug$style_framework$Framework$ConfigurationNew$configuration_, lucamug$style_framework$MyStyle$configuration));
+};
+var lucamug$style_framework$Framework$ConfigurationNew$getFloat = function (key) {
+	var _n0 = elm$core$String$toFloat(
+		lucamug$style_framework$Framework$ConfigurationNew$getString(key));
+	if (_n0.$ === 'Just') {
+		var value2 = _n0.a;
+		return value2;
+	} else {
+		return 0;
+	}
+};
+var elm$core$Basics$round = _Basics_round;
+var lucamug$style_framework$Framework$ConfigurationNew$getInt = function (key) {
+	return elm$core$Basics$round(
+		lucamug$style_framework$Framework$ConfigurationNew$getFloat(key));
+};
+var mdgriffith$elm_ui$Internal$Model$Monospace = {$: 'Monospace'};
+var mdgriffith$elm_ui$Element$Font$monospace = mdgriffith$elm_ui$Internal$Model$Monospace;
+var mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
+var mdgriffith$elm_ui$Element$Font$sansSerif = mdgriffith$elm_ui$Internal$Model$SansSerif;
+var mdgriffith$elm_ui$Internal$Model$Serif = {$: 'Serif'};
+var mdgriffith$elm_ui$Element$Font$serif = mdgriffith$elm_ui$Internal$Model$Serif;
+var lucamug$style_framework$Framework$ConfigurationNew$getTypeface = function (key) {
+	var value = lucamug$style_framework$Framework$ConfigurationNew$getString(key);
+	return (value === 'sans-serif') ? mdgriffith$elm_ui$Element$Font$sansSerif : ((value === 'monospace') ? mdgriffith$elm_ui$Element$Font$monospace : ((value === 'cursive') ? mdgriffith$elm_ui$Element$Font$serif : mdgriffith$elm_ui$Element$Font$serif));
+};
+var lucamug$style_framework$Framework$ConfigurationNew$configuration = {
+	button: {
+		fontDefault: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontDefault'),
+		fontJumbo: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontJumbo'),
+		fontLarge: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontLarge'),
+		fontMedium: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontMedium'),
+		fontSmall: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontSmall'),
+		paddingXDefault: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXDefault'),
+		paddingXJumbo: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXJumbo'),
+		paddingXLarge: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXLarge'),
+		paddingXMedium: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXMedium'),
+		paddingXSmall: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXSmall'),
+		paddingYDefault: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYDefault'),
+		paddingYJumbo: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYJumbo'),
+		paddingYLarge: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYLarge'),
+		paddingYMedium: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYMedium'),
+		paddingYSmall: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYSmall')
+	},
+	color: {background: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, black: lucamug$style_framework$Framework$ConfigurationNew$colors.black, blackBis: lucamug$style_framework$Framework$ConfigurationNew$colors.blackBis, blackTer: lucamug$style_framework$Framework$ConfigurationNew$colors.blackTer, blue: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, border: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter, border_hover: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, brown: lucamug$style_framework$Framework$ConfigurationNew$colors.brown, code: lucamug$style_framework$Framework$ConfigurationNew$colors.red, code_background: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, danger: lucamug$style_framework$Framework$ConfigurationNew$colors.danger, dark: lucamug$style_framework$Framework$ConfigurationNew$colors.dark, green: lucamug$style_framework$Framework$ConfigurationNew$colors.green, grey: lucamug$style_framework$Framework$ConfigurationNew$colors.grey, greyDark: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, greyDarker: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, greyLight: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, greyLighter: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter, info: lucamug$style_framework$Framework$ConfigurationNew$colors.info, light: lucamug$style_framework$Framework$ConfigurationNew$colors.light, link: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, link_active: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, link_active_border: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, link_focus: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, link_focus_border: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, link_hover: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, link_hover_border: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, link_invert: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, link_visited: lucamug$style_framework$Framework$ConfigurationNew$colors.purple, muted: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, orange: lucamug$style_framework$Framework$ConfigurationNew$colors.orange, pink: lucamug$style_framework$Framework$ConfigurationNew$colors.pink, pre: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, pre_background: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, primary: lucamug$style_framework$Framework$ConfigurationNew$colors.primary, purple: lucamug$style_framework$Framework$ConfigurationNew$colors.purple, red: lucamug$style_framework$Framework$ConfigurationNew$colors.red, success: lucamug$style_framework$Framework$ConfigurationNew$colors.success, text: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, text_light: lucamug$style_framework$Framework$ConfigurationNew$colors.grey, text_strong: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, warning: lucamug$style_framework$Framework$ConfigurationNew$colors.warning, white: lucamug$style_framework$Framework$ConfigurationNew$colors.white, whiteBis: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteBis, whiteTer: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, yellow: lucamug$style_framework$Framework$ConfigurationNew$colors.yellow},
+	font: {
+		typeface: lucamug$style_framework$Framework$ConfigurationNew$getString('font_typeface'),
+		typefaceFallback: lucamug$style_framework$Framework$ConfigurationNew$getTypeface('font_typeface_fallback'),
+		url: lucamug$style_framework$Framework$ConfigurationNew$getString('font_url')
+	},
+	moveDownPlaceholder: {
+		large: lucamug$style_framework$Framework$ConfigurationNew$getFloat('moveDownPlaceHolderLarge'),
+		small: lucamug$style_framework$Framework$ConfigurationNew$getFloat('moveDownPlaceHolderSmall')
+	},
+	size: {
+		size1: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size1'),
+		size2: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size2'),
+		size3: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size3'),
+		size4: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size4'),
+		size5: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size5'),
+		size6: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size6'),
+		size7: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size7')
+	}
+};
+var lucamug$style_framework$Framework$Button$toButtonPadding = function (size) {
+	switch (size.$) {
+		case 'SizeSmall':
+			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXSmall, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYSmall);
+		case 'SizeDefault':
+			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXDefault, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYDefault);
+		case 'SizeMedium':
+			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXMedium, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYMedium);
+		case 'SizeLarge':
+			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXLarge, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYLarge);
+		default:
+			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXJumbo, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYJumbo);
+	}
+};
+var lucamug$style_framework$Framework$Button$toPx = function (size) {
+	switch (size.$) {
+		case 'SizeSmall':
+			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontSmall;
+		case 'SizeDefault':
+			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontDefault;
+		case 'SizeMedium':
+			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontMedium;
+		case 'SizeLarge':
+			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontLarge;
+		default:
+			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontJumbo;
+	}
+};
+var lucamug$style_framework$Framework$ColorNew$disabledButtonBackground = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter;
+var lucamug$style_framework$Framework$ColorNew$disabledButtonFont = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight;
+var lucamug$style_framework$Framework$ColorNew$greyDark = lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark;
+var lucamug$style_framework$Framework$ColorNew$lighten = F2(
+	function (quantity, color) {
+		return color;
+	});
+var lucamug$style_framework$Framework$ColorNew$saturate = F2(
+	function (quantity, color) {
+		return color;
+	});
+var mdgriffith$elm_ui$Element$rgba = mdgriffith$elm_ui$Internal$Model$Rgba;
+var lucamug$style_framework$Framework$ColorNew$transparent = A4(mdgriffith$elm_ui$Element$rgba, 255, 255, 255, 0);
 var mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
 	return {$: 'AlignX', a: a};
 };
@@ -5946,6 +4910,61 @@ var mdgriffith$elm_ui$Internal$Model$contextClasses = function (context) {
 			return mdgriffith$elm_ui$Internal$Model$pageClass;
 	}
 };
+var elm$core$List$foldrHelper = F4(
+	function (fn, acc, ctr, ls) {
+		if (!ls.b) {
+			return acc;
+		} else {
+			var a = ls.a;
+			var r1 = ls.b;
+			if (!r1.b) {
+				return A2(fn, a, acc);
+			} else {
+				var b = r1.a;
+				var r2 = r1.b;
+				if (!r2.b) {
+					return A2(
+						fn,
+						a,
+						A2(fn, b, acc));
+				} else {
+					var c = r2.a;
+					var r3 = r2.b;
+					if (!r3.b) {
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(fn, c, acc)));
+					} else {
+						var d = r3.a;
+						var r4 = r3.b;
+						var res = (ctr > 500) ? A3(
+							elm$core$List$foldl,
+							fn,
+							acc,
+							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(
+									fn,
+									c,
+									A2(fn, d, res))));
+					}
+				}
+			}
+		}
+	});
+var elm$core$List$foldr = F3(
+	function (fn, acc, ls) {
+		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
+	});
 var elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
 		return true;
@@ -5959,6 +4978,9 @@ var mdgriffith$elm_ui$Internal$Model$Keyed = function (a) {
 var mdgriffith$elm_ui$Internal$Model$NoStyleSheet = {$: 'NoStyleSheet'};
 var mdgriffith$elm_ui$Internal$Model$Styled = function (a) {
 	return {$: 'Styled', a: a};
+};
+var mdgriffith$elm_ui$Internal$Model$Unstyled = function (a) {
+	return {$: 'Unstyled', a: a};
 };
 var mdgriffith$elm_ui$Internal$Model$addChildren = F2(
 	function (existing, nearbyChildren) {
@@ -5978,6 +5000,20 @@ var mdgriffith$elm_ui$Internal$Model$addChildren = F2(
 					behind,
 					_Utils_ap(existing, inFront));
 		}
+	});
+var elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
 	});
 var mdgriffith$elm_ui$Internal$Model$addKeyedChildren = F3(
 	function (key, existing, nearbyChildren) {
@@ -6064,6 +5100,7 @@ var mdgriffith$elm_ui$Internal$Flag$centerX = mdgriffith$elm_ui$Internal$Flag$fl
 var mdgriffith$elm_ui$Internal$Flag$centerY = mdgriffith$elm_ui$Internal$Flag$flag(43);
 var mdgriffith$elm_ui$Internal$Flag$heightBetween = mdgriffith$elm_ui$Internal$Flag$flag(45);
 var mdgriffith$elm_ui$Internal$Flag$heightFill = mdgriffith$elm_ui$Internal$Flag$flag(37);
+var elm$core$Bitwise$and = _Bitwise_and;
 var mdgriffith$elm_ui$Internal$Flag$present = F2(
 	function (myFlag, _n0) {
 		var fieldOne = _n0.a;
@@ -8291,6 +7328,9 @@ var elm$core$Basics$min = F2(
 	function (x, y) {
 		return (_Utils_cmp(x, y) < 0) ? x : y;
 	});
+var elm$core$Basics$negate = function (n) {
+	return -n;
+};
 var elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -11129,6 +10169,11 @@ var mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
 	function (a, b) {
 		return {$: 'TransformComponent', a: a, b: b};
 	});
+var elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var mdgriffith$elm_ui$Internal$Model$Text = function (a) {
@@ -11255,6 +10300,7 @@ var mdgriffith$elm_ui$Element$mouseOver = function (decs) {
 			mdgriffith$elm_ui$Internal$Model$Hover,
 			mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
 };
+var mdgriffith$elm_ui$Element$none = mdgriffith$elm_ui$Internal$Model$Empty;
 var mdgriffith$elm_ui$Internal$Flag$padding = mdgriffith$elm_ui$Internal$Flag$flag(2);
 var mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
 	function (a, b, c, d, e) {
@@ -11363,14 +10409,13 @@ var mdgriffith$elm_ui$Element$Font$size = function (i) {
 		mdgriffith$elm_ui$Internal$Flag$fontSize,
 		mdgriffith$elm_ui$Internal$Model$FontSize(i));
 };
-var author$project$Framework$Button$buttonAttr = function (modifiers) {
+var lucamug$style_framework$Framework$Button$buttonAttr = function (modifiers) {
 	var confButton = A3(
 		elm$core$List$foldl,
-		author$project$Framework$Button$processConf,
-		{color: author$project$Framework$Button$colorDefault, size: author$project$Framework$Button$SizeDefault, state: author$project$Framework$Button$StateDefault},
+		lucamug$style_framework$Framework$Button$processConf,
+		{color: lucamug$style_framework$Framework$Button$colorDefault, size: lucamug$style_framework$Framework$Button$SizeDefault, state: lucamug$style_framework$Framework$Button$StateDefault},
 		modifiers);
-	var fontSize = author$project$Framework$Button$toPx(confButton.size);
-	var spinnerColor = _Utils_eq(confButton.color, author$project$Framework$Color$white) ? author$project$Framework$Color$grey_dark : author$project$Framework$Color$white;
+	var fontSize = lucamug$style_framework$Framework$Button$toPx(confButton.size);
 	var inFrontAddon = function () {
 		var _n6 = confButton.state;
 		switch (_n6.$) {
@@ -11382,7 +10427,7 @@ var author$project$Framework$Button$buttonAttr = function (modifiers) {
 							mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[mdgriffith$elm_ui$Element$centerY, mdgriffith$elm_ui$Element$centerX]),
-							A3(author$project$Framework$Spinner$spinner, author$project$Framework$Spinner$Rotation, fontSize, spinnerColor)))
+							mdgriffith$elm_ui$Element$none))
 					]);
 			case 'StateWaiting':
 				return _List_fromArray(
@@ -11392,12 +10437,13 @@ var author$project$Framework$Button$buttonAttr = function (modifiers) {
 							mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[mdgriffith$elm_ui$Element$centerY, mdgriffith$elm_ui$Element$centerX]),
-							A3(author$project$Framework$Spinner$spinner, author$project$Framework$Spinner$ThreeCircles, fontSize - 4, spinnerColor)))
+							mdgriffith$elm_ui$Element$none))
 					]);
 			default:
 				return _List_Nil;
 		}
 	}();
+	var spinnerColor = _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$ColorNew$greyDark : lucamug$style_framework$Framework$ColorNew$white;
 	var cc = confButton.color;
 	var fontColor = function () {
 		var _n5 = confButton.state;
@@ -11405,32 +10451,32 @@ var author$project$Framework$Button$buttonAttr = function (modifiers) {
 			case 'StateOutlined':
 				return cc;
 			case 'StateLoading':
-				return author$project$Framework$Color$transparent;
+				return lucamug$style_framework$Framework$ColorNew$transparent;
 			case 'StateWaiting':
-				return author$project$Framework$Color$transparent;
+				return lucamug$style_framework$Framework$ColorNew$transparent;
 			case 'StateDisabled':
-				return author$project$Framework$Color$disabledButtonFont;
+				return lucamug$style_framework$Framework$ColorNew$disabledButtonFont;
 			default:
-				return _Utils_eq(confButton.color, author$project$Framework$Color$white) ? author$project$Framework$Color$grey_dark : author$project$Framework$Color$white;
+				return _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$ColorNew$greyDark : lucamug$style_framework$Framework$ColorNew$white;
 		}
 	}();
 	var fontMouseOverColor = function () {
 		var _n4 = confButton.state;
 		switch (_n4.$) {
 			case 'StateLoading':
-				return author$project$Framework$Color$transparent;
+				return lucamug$style_framework$Framework$ColorNew$transparent;
 			case 'StateWaiting':
-				return author$project$Framework$Color$transparent;
+				return lucamug$style_framework$Framework$ColorNew$transparent;
 			case 'StateOutlined':
-				return author$project$Framework$Color$white;
+				return lucamug$style_framework$Framework$ColorNew$white;
 			default:
 				return A2(
-					author$project$Color$saturate,
+					lucamug$style_framework$Framework$ColorNew$saturate,
 					0.9,
-					A2(author$project$Color$lighten, 0.8, fontColor));
+					A2(lucamug$style_framework$Framework$ColorNew$lighten, 0.8, fontColor));
 		}
 	}();
-	var buttonPadding = author$project$Framework$Button$toButtonPadding(confButton.size);
+	var buttonPadding = lucamug$style_framework$Framework$Button$toButtonPadding(confButton.size);
 	var borderRounded = function () {
 		var _n3 = confButton.size;
 		if (_n3.$ === 'SizeSmall') {
@@ -11445,13 +10491,13 @@ var author$project$Framework$Button$buttonAttr = function (modifiers) {
 			case 'StateDefault':
 				return cc;
 			case 'StateOutlined':
-				return _Utils_eq(confButton.color, author$project$Framework$Color$white) ? author$project$Framework$Button$colorBorderDefault : author$project$Framework$Color$transparent;
+				return _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$Button$colorBorderDefault : lucamug$style_framework$Framework$ColorNew$transparent;
 			case 'StateLoading':
 				return cc;
 			case 'StateWaiting':
 				return cc;
 			default:
-				return author$project$Framework$Color$disabledButtonBackground;
+				return lucamug$style_framework$Framework$ColorNew$disabledButtonBackground;
 		}
 	}();
 	var backgroundMouseOverColor = function () {
@@ -11460,14 +10506,14 @@ var author$project$Framework$Button$buttonAttr = function (modifiers) {
 			return cc;
 		} else {
 			return A2(
-				author$project$Color$saturate,
+				lucamug$style_framework$Framework$ColorNew$saturate,
 				0.9,
-				A2(author$project$Color$lighten, 0.8, backgroundColor));
+				A2(lucamug$style_framework$Framework$ColorNew$lighten, 0.8, backgroundColor));
 		}
 	}();
 	var borderColor = function () {
-		if (_Utils_eq(confButton.color, author$project$Framework$Color$white)) {
-			return author$project$Framework$Button$colorBorderDefault;
+		if (_Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white)) {
+			return lucamug$style_framework$Framework$Button$colorBorderDefault;
 		} else {
 			var _n0 = confButton.state;
 			if (_n0.$ === 'StateOutlined') {
@@ -11478,25 +10524,22 @@ var author$project$Framework$Button$buttonAttr = function (modifiers) {
 		}
 	}();
 	var borderMouseOverColor = A2(
-		author$project$Color$saturate,
+		lucamug$style_framework$Framework$ColorNew$saturate,
 		0.9,
-		A2(author$project$Color$lighten, 0.8, borderColor));
+		A2(lucamug$style_framework$Framework$ColorNew$lighten, 0.8, borderColor));
 	return _Utils_ap(
 		_List_fromArray(
 			[
 				mdgriffith$elm_ui$Element$Font$size(fontSize),
-				mdgriffith$elm_ui$Element$Font$color(
-				author$project$Color$toElementColor(fontColor)),
-				mdgriffith$elm_ui$Element$Background$color(
-				author$project$Color$toElementColor(backgroundColor)),
+				mdgriffith$elm_ui$Element$Font$color(fontColor),
+				mdgriffith$elm_ui$Element$Background$color(backgroundColor),
 				A2(mdgriffith$elm_ui$Element$paddingXY, buttonPadding.a, buttonPadding.b),
 				mdgriffith$elm_ui$Element$Border$rounded(borderRounded),
 				mdgriffith$elm_ui$Element$Border$width(1),
-				mdgriffith$elm_ui$Element$Border$color(
-				author$project$Color$toElementColor(borderColor))
+				mdgriffith$elm_ui$Element$Border$color(borderColor)
 			]),
 		_Utils_ap(
-			_Utils_eq(confButton.state, author$project$Framework$Button$StateDisabled) ? _List_fromArray(
+			_Utils_eq(confButton.state, lucamug$style_framework$Framework$Button$StateDisabled) ? _List_fromArray(
 				[
 					mdgriffith$elm_ui$Element$htmlAttribute(
 					A2(elm$html$Html$Attributes$style, 'cursor', 'not-allowed'))
@@ -11505,12 +10548,9 @@ var author$project$Framework$Button$buttonAttr = function (modifiers) {
 					mdgriffith$elm_ui$Element$mouseOver(
 					_List_fromArray(
 						[
-							mdgriffith$elm_ui$Element$Font$color(
-							author$project$Color$toElementColor(fontMouseOverColor)),
-							mdgriffith$elm_ui$Element$Background$color(
-							author$project$Color$toElementColor(backgroundMouseOverColor)),
-							mdgriffith$elm_ui$Element$Border$color(
-							author$project$Color$toElementColor(borderMouseOverColor))
+							mdgriffith$elm_ui$Element$Font$color(fontMouseOverColor),
+							mdgriffith$elm_ui$Element$Background$color(backgroundMouseOverColor),
+							mdgriffith$elm_ui$Element$Border$color(borderMouseOverColor)
 						]))
 				]),
 			inFrontAddon));
@@ -11660,19 +10700,19 @@ var mdgriffith$elm_ui$Element$Input$button = F2(
 				_List_fromArray(
 					[label])));
 	});
-var author$project$Framework$Button$button = F3(
+var lucamug$style_framework$Framework$Button$button = F3(
 	function (modifiers, onPress, label) {
 		return A2(
 			mdgriffith$elm_ui$Element$Input$button,
-			author$project$Framework$Button$buttonAttr(modifiers),
+			lucamug$style_framework$Framework$Button$buttonAttr(modifiers),
 			{
 				label: mdgriffith$elm_ui$Element$text(label),
 				onPress: onPress
 			});
 	});
-var author$project$Framework$Modifier$Medium = {$: 'Medium'};
-var author$project$Framework$Modifier$Outlined = {$: 'Outlined'};
-var author$project$Framework$Modifier$Success = {$: 'Success'};
+var lucamug$style_framework$Framework$Modifier$Medium = {$: 'Medium'};
+var lucamug$style_framework$Framework$Modifier$Outlined = {$: 'Outlined'};
+var lucamug$style_framework$Framework$Modifier$Success = {$: 'Success'};
 var mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 'OnlyDynamic', a: a, b: b};
@@ -11825,6 +10865,7 @@ var mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
 var mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
 	return {$: 'Typeface', a: a};
 };
+var elm$core$String$toLower = _String_toLower;
 var elm$core$String$words = _String_words;
 var mdgriffith$elm_ui$Internal$Model$renderFontClassName = F2(
 	function (font, current) {
@@ -11923,7 +10964,7 @@ var mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var mdgriffith$elm_ui$Element$layout = mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
-var author$project$Main$main = A2(
+var lucamug$style_framework$Main$main = A2(
 	mdgriffith$elm_ui$Element$layout,
 	_List_Nil,
 	A2(
@@ -11931,9 +10972,9 @@ var author$project$Main$main = A2(
 		_List_fromArray(
 			[mdgriffith$elm_ui$Element$centerX, mdgriffith$elm_ui$Element$centerY]),
 		A3(
-			author$project$Framework$Button$button,
+			lucamug$style_framework$Framework$Button$button,
 			_List_fromArray(
-				[author$project$Framework$Modifier$Medium, author$project$Framework$Modifier$Success, author$project$Framework$Modifier$Outlined]),
+				[lucamug$style_framework$Framework$Modifier$Medium, lucamug$style_framework$Framework$Modifier$Success, lucamug$style_framework$Framework$Modifier$Outlined]),
 			elm$core$Maybe$Nothing,
 			'Button')));
-_Platform_export({'Main':{'init':_VirtualDom_init(author$project$Main$main)(0)(0)}});}(this));
+_Platform_export({'Main':{'init':_VirtualDom_init(lucamug$style_framework$Main$main)(0)(0)}});}(this));

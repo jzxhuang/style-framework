@@ -1,0 +1,3 @@
+#!/bin/bash
+# cp src/myStyle.elm.example src/myStyle.elm
+npx elm-live src/FrameworkNew.elm --start-page=frameworkNew.html --dir=docs --path-to-elm=node_modules/.bin/elm --port=8001 -- --debug --output=docs/js-dev/frameworkNew.js

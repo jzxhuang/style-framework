@@ -1,4 +1,4 @@
-module Framework.Button exposing
+module Framework.ButtonNew exposing
     ( button, buttonWidth
     , buttonLink, buttonLinkWidth
     , buttonCustomizable

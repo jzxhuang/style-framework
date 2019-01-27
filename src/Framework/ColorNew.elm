@@ -5,8 +5,9 @@ module Framework.ColorNew exposing
     , text, textLight, textStrong, code, codeBackground, pre, preBackground
     , link, linkActive, linkActiveBorder, linkFocus, linkFocusBorder, linkHover, linkHoverBorder, linkInvert, linkVisited
     , background, border, borderHover, muted, disabledButtonBackground, disabledButtonFont
+    , toRgba255, toRgbaString, toRgbString, toHexString
     , introspection
-    , lighten, saturate, transparent
+    , lighten, luminance, saturate, transparent
     )
 
 {-| [Demo](https://lucamug.github.io/style-framework/generated-framework.html#/framework/Colors/Colors)
@@ -56,6 +57,11 @@ Colors are inspired by the Bulma framework: <https://bulma.io/documentation/over
 @docs background, border, borderHover, muted, disabledButtonBackground, disabledButtonFont
 
 
+# CSS String
+
+@docs toRgba255, toRgbaString, toRgbString, toHexString
+
+
 # Introspection
 
 Used internally to generate the [Style Guide](https://lucamug.github.io/)
@@ -66,7 +72,7 @@ Used internally to generate the [Style Guide](https://lucamug.github.io/)
 
 -- import Color
 
-import Element exposing (Element, column, rgba)
+import Element exposing (Element, column)
 import Element.Background
 import Element.Border
 import Element.Font
@@ -81,7 +87,7 @@ introspection :
     , variations : List ( String, List ( Element msg1, String ) )
     }
 introspection =
-    { name = "Colors"
+    { name = "ColorsNew"
     , description = ""
     , signature = "Element.Color"
     , variations =
@@ -496,7 +502,7 @@ disabledButtonFont =
 {-| -}
 transparent : Element.Color
 transparent =
-    rgba 255 255 255 0
+    Element.rgba 255 255 255 0
 
 
 
@@ -520,14 +526,50 @@ Lightness in percent, will be clamped between 0 - 100
 hsla : Float -> Float -> Float -> Float -> Element.Color
 hsla hue saturationPercent lightnessPercent alpha =
     let
+        hslaColor =
+            { hue = hue
+            , saturation = saturationPercent
+            , lightness = lightnessPercent
+            , alpha = alpha
+            }
+    in
+    hslaToRgba hslaColor |> Element.fromRgb
+
+
+{-| -}
+hsl : Float -> Float -> Float -> Element.Color
+hsl h s l =
+    hsla h s l 1.0
+
+
+{-| Get the hsla representation of a Color
+0 - 360 degrees
+0% - 100%
+0% - 100%
+0 - 1.0
+-}
+toHsla : Element.Color -> { hue : Float, saturation : Float, lightness : Float, alpha : Float }
+toHsla =
+    Element.toRgb >> rgbaToHsla
+
+
+
+-- Conversions
+
+
+{-| Converts hsla to rgba normalized, which can be used by Element.rgba or Element.fromRgb
+-}
+hslaToRgba : { hue : Float, saturation : Float, lightness : Float, alpha : Float } -> { red : Float, green : Float, blue : Float, alpha : Float }
+hslaToRgba hslaColor =
+    let
         hue360 =
-            modBy 360 (floor hue) |> toFloat
+            modBy 360 (floor hslaColor.hue) |> toFloat
 
         saturation =
-            clamp 0 100 saturationPercent / 100
+            clamp 0 100 hslaColor.saturation / 100
 
         lightness =
-            clamp 0 100 lightnessPercent / 100
+            clamp 0 100 hslaColor.lightness / 100
 
         chroma =
             (1 - abs (2 * lightness - 1)) * saturation
@@ -563,17 +605,204 @@ hsla hue saturationPercent lightnessPercent alpha =
             else
                 ( chroma, 0, zigDown 360 )
     in
-    rgba (r + lightnessModifier) (g + lightnessModifier) (b + lightnessModifier) alpha
+    { red = r + lightnessModifier, green = g + lightnessModifier, blue = b + lightnessModifier, alpha = hslaColor.alpha }
+
+
+rgbaToHsla : { red : Float, green : Float, blue : Float, alpha : Float } -> { hue : Float, saturation : Float, lightness : Float, alpha : Float }
+rgbaToHsla rgba =
+    let
+        r =
+            rgba.red
+
+        g =
+            rgba.green
+
+        b =
+            rgba.blue
+
+        cMax =
+            max (max r g) b
+
+        cMin =
+            min (min r g) b
+
+        chroma =
+            cMax - cMin
+
+        hue =
+            if chroma == 0 then
+                0
+
+            else
+                60
+                    * (if cMax == r then
+                        (g - b) / chroma
+
+                       else if cMax == g then
+                        ((b - r) / chroma) + 2
+
+                       else
+                        -- cMax == b
+                        (r - g) / chroma + 4
+                      )
+
+        lightness =
+            (cMax + cMin) / 2
+
+        saturation =
+            if lightness == 0 then
+                0
+
+            else
+                chroma / (1 - abs (2 * lightness - 1))
+    in
+    { hue =
+        if hue < 0 then
+            hue + 360
+
+        else
+            hue
+    , saturation = saturation * 100
+    , lightness = lightness * 100
+    , alpha = rgba.alpha
+    }
+
+
+
+{-
+    ██████╗███████╗███████╗
+   ██╔════╝██╔════╝██╔════╝
+   ██║     ███████╗███████╗
+   ██║     ╚════██║╚════██║
+   ╚██████╗███████║███████║
+    ╚═════╝╚══════╝╚══════╝
+-}
 
 
 {-| -}
-hsl : Float -> Float -> Float -> Element.Color
-hsl h s l =
-    hsla h s l 1.0
+toRgba255 : Element.Color -> { red : Int, green : Int, blue : Int, alpha : Float }
+toRgba255 color =
+    let
+        r =
+            Element.toRgb color
+    in
+    { red = round r.red, green = round r.green, blue = round r.blue, alpha = r.alpha }
+
+
+{-| -}
+toRgbaString : Element.Color -> String
+toRgbaString color =
+    "rgba("
+        ++ (toRgba255 color
+                |> (\rgba255 ->
+                        List.map String.fromInt [ rgba255.red, rgba255.green, rgba255.blue ]
+                            ++ [ String.fromFloat rgba255.alpha ]
+                            |> String.join ","
+                   )
+           )
+        ++ ")"
+
+
+{-| -}
+toRgbString : Element.Color -> String
+toRgbString color =
+    "rgb("
+        ++ (toRgba255 color
+                |> (\rgba255 -> List.map String.fromInt [ rgba255.red, rgba255.green, rgba255.blue ])
+                |> String.join ","
+           )
+        ++ ")"
+
+
+{-| -}
+toHexString : Element.Color -> String
+toHexString color =
+    toRgba255 color
+        |> (\rgba255 ->
+                List.map toHex [ rgba255.red, rgba255.green, rgba255.blue ]
+                    |> (::) "#"
+                    |> String.join ""
+           )
+
+
+toHex : Int -> String
+toHex =
+    toRadix >> String.padLeft 2 '0'
+
+
+toRadix : Int -> String
+toRadix n =
+    let
+        getChar c =
+            if c < 10 then
+                String.fromInt c
+
+            else
+                String.fromChar <| Char.fromCode (87 + c)
+    in
+    if n < 16 then
+        getChar n
+
+    else
+        toRadix (n // 16) ++ getChar (remainderBy 16 n)
+
+
+toHslaString : Element.Color -> String
+toHslaString color =
+    let
+        c =
+            toHsla color
+    in
+    "hsla(" ++ String.fromFloat c.hue ++ "," ++ String.fromFloat c.saturation ++ "%," ++ String.fromFloat c.lightness ++ "%," ++ String.fromFloat c.alpha ++ ")"
+
+
+toHslString : Element.Color -> String
+toHslString color =
+    let
+        c =
+            toHsla color
+    in
+    "hsl(" ++ String.fromFloat c.hue ++ "," ++ String.fromFloat c.saturation ++ "%," ++ String.fromFloat c.lightness ++ "%)"
+
+
+{-| Luminance calculation adopted from <https://www.w3.org/TR/WCAG20-TECHS/G17.html>
+Luminance describes the perceived brightness of a color.
+To guarantee a readable shade of text, we need to look at the luminance of a color.
+If the luminance is > 0.55, use black text. Else, white.
+<https://bulma.io/documentation/overview/functions/#the-code-findcolorinvert-code-function>
+For colors very close to the threshold, either color is OK.
+
+Note to self... this calculation is different from the Bulma calculations, but consistent with <https://planetcalc.com/7779/>
+
+-}
+luminance : Element.Color -> Float
+luminance color =
+    let
+        sRgb channel =
+            if channel <= 0.03928 then
+                channel / 12.92
+
+            else
+                ((channel + 0.055) / 1.055) ^ 2.4
+
+        rgbaColor =
+            Element.toRgb color
+
+        r =
+            sRgb rgbaColor.red
+
+        g =
+            sRgb rgbaColor.green
+
+        b =
+            sRgb rgbaColor.blue
+    in
+    (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
 
 
 
--- toCssString
+-- toHsl
+-- toHsla
 -- From hex?
 {-
    hex : Hex -> Hex -> Hex -> Hex -> Hex -> Hex -> Element.Color
@@ -590,10 +819,18 @@ hsl h s l =
 
    hexToString : Hex -> String
 -}
+{-
+   ███╗   ███╗ █████╗ ███╗   ██╗██╗██████╗ ██╗   ██╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+   ████╗ ████║██╔══██╗████╗  ██║██║██╔══██╗██║   ██║██║     ██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+   ██╔████╔██║███████║██╔██╗ ██║██║██████╔╝██║   ██║██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║
+   ██║╚██╔╝██║██╔══██║██║╚██╗██║██║██╔═══╝ ██║   ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║
+   ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║██║     ╚██████╔╝███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║
+   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝      ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+-}
 -- #############################
 -- ## From Color Manipulation ##
 -- #############################
--- Totally incomplete?
+-- Totally incomplete...?
 
 
 {-| -}

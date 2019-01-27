@@ -4854,6 +4854,444 @@ var lucamug$style_framework$Framework$ColorNew$saturate = F2(
 	});
 var mdgriffith$elm_ui$Element$rgba = mdgriffith$elm_ui$Internal$Model$Rgba;
 var lucamug$style_framework$Framework$ColorNew$transparent = A4(mdgriffith$elm_ui$Element$rgba, 255, 255, 255, 0);
+var lucamug$style_framework$Framework$SpinnerNew$Rotation = {$: 'Rotation'};
+var lucamug$style_framework$Framework$SpinnerNew$ThreeCircles = {$: 'ThreeCircles'};
+var elm$core$String$length = _String_length;
+var elm$core$String$slice = _String_slice;
+var elm$core$String$dropLeft = F2(
+	function (n, string) {
+		return (n < 1) ? string : A3(
+			elm$core$String$slice,
+			n,
+			elm$core$String$length(string),
+			string);
+	});
+var elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var elm$svg$Svg$animateTransform = elm$svg$Svg$trustedNode('animateTransform');
+var elm$svg$Svg$circle = elm$svg$Svg$trustedNode('circle');
+var elm$svg$Svg$defs = elm$svg$Svg$trustedNode('defs');
+var elm$svg$Svg$g = elm$svg$Svg$trustedNode('g');
+var elm$svg$Svg$linearGradient = elm$svg$Svg$trustedNode('linearGradient');
+var elm$svg$Svg$path = elm$svg$Svg$trustedNode('path');
+var elm$svg$Svg$stop = elm$svg$Svg$trustedNode('stop');
+var elm$svg$Svg$svg = elm$svg$Svg$trustedNode('svg');
+var elm$svg$Svg$Attributes$attributeName = _VirtualDom_attribute('attributeName');
+var elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
+var elm$svg$Svg$Attributes$dur = _VirtualDom_attribute('dur');
+var elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var elm$svg$Svg$Attributes$fillRule = _VirtualDom_attribute('fill-rule');
+var elm$svg$Svg$Attributes$from = function (value) {
+	return A2(
+		_VirtualDom_attribute,
+		'from',
+		_VirtualDom_noJavaScriptUri(value));
+};
+var elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var elm$svg$Svg$Attributes$id = _VirtualDom_attribute('id');
+var elm$svg$Svg$Attributes$offset = _VirtualDom_attribute('offset');
+var elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var elm$svg$Svg$Attributes$repeatCount = _VirtualDom_attribute('repeatCount');
+var elm$svg$Svg$Attributes$stopColor = _VirtualDom_attribute('stop-color');
+var elm$svg$Svg$Attributes$stopOpacity = _VirtualDom_attribute('stop-opacity');
+var elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var elm$svg$Svg$Attributes$to = function (value) {
+	return A2(
+		_VirtualDom_attribute,
+		'to',
+		_VirtualDom_noJavaScriptUri(value));
+};
+var elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
+var elm$svg$Svg$Attributes$type_ = _VirtualDom_attribute('type');
+var elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
+var elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var elm$svg$Svg$Attributes$xmlSpace = A2(_VirtualDom_attributeNS, 'http://www.w3.org/XML/1998/namespace', 'xml:space');
+var elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var elm$core$List$foldrHelper = F4(
+	function (fn, acc, ctr, ls) {
+		if (!ls.b) {
+			return acc;
+		} else {
+			var a = ls.a;
+			var r1 = ls.b;
+			if (!r1.b) {
+				return A2(fn, a, acc);
+			} else {
+				var b = r1.a;
+				var r2 = r1.b;
+				if (!r2.b) {
+					return A2(
+						fn,
+						a,
+						A2(fn, b, acc));
+				} else {
+					var c = r2.a;
+					var r3 = r2.b;
+					if (!r3.b) {
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(fn, c, acc)));
+					} else {
+						var d = r3.a;
+						var r4 = r3.b;
+						var res = (ctr > 500) ? A3(
+							elm$core$List$foldl,
+							fn,
+							acc,
+							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(
+									fn,
+									c,
+									A2(fn, d, res))));
+					}
+				}
+			}
+		}
+	});
+var elm$core$List$foldr = F3(
+	function (fn, acc, ls) {
+		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
+	});
+var elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
+	});
+var elm$core$String$fromFloat = _String_fromNumber;
+var mdgriffith$elm_ui$Element$toRgb = function (_n0) {
+	var r = _n0.a;
+	var g = _n0.b;
+	var b = _n0.c;
+	var a = _n0.d;
+	return {alpha: a, blue: b, green: g, red: r};
+};
+var lucamug$style_framework$Framework$ColorNew$toRgba255 = function (color) {
+	var r = mdgriffith$elm_ui$Element$toRgb(color);
+	return {
+		alpha: r.alpha,
+		blue: elm$core$Basics$round(r.blue),
+		green: elm$core$Basics$round(r.green),
+		red: elm$core$Basics$round(r.red)
+	};
+};
+var lucamug$style_framework$Framework$ColorNew$toRgbaString = function (color) {
+	return 'rgba(' + (function (rgba255) {
+		return A2(
+			elm$core$String$join,
+			',',
+			_Utils_ap(
+				A2(
+					elm$core$List$map,
+					elm$core$String$fromInt,
+					_List_fromArray(
+						[rgba255.red, rgba255.green, rgba255.blue])),
+				_List_fromArray(
+					[
+						elm$core$String$fromFloat(rgba255.alpha)
+					])));
+	}(
+		lucamug$style_framework$Framework$ColorNew$toRgba255(color)) + ')');
+};
+var lucamug$style_framework$Framework$SpinnerNew$spinnerRotationHtml = F2(
+	function (size, color) {
+		var speed = '0.6s';
+		var colorString = lucamug$style_framework$Framework$ColorNew$toRgbaString(color);
+		var idElement = 'id' + A2(elm$core$String$dropLeft, 1, colorString);
+		return A2(
+			elm$svg$Svg$svg,
+			_List_fromArray(
+				[
+					elm$svg$Svg$Attributes$viewBox('0 0 38 38'),
+					elm$svg$Svg$Attributes$xmlSpace('http://www.w3.org/2000/svg'),
+					elm$svg$Svg$Attributes$width(
+					elm$core$String$fromInt(size)),
+					elm$svg$Svg$Attributes$height(
+					elm$core$String$fromInt(size))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$defs,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$svg$Svg$linearGradient,
+							_List_fromArray(
+								[
+									elm$svg$Svg$Attributes$id(idElement),
+									elm$svg$Svg$Attributes$x1('8%'),
+									elm$svg$Svg$Attributes$x2('65.7%'),
+									elm$svg$Svg$Attributes$y1('0%'),
+									elm$svg$Svg$Attributes$y2('23.9%')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$svg$Svg$stop,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$offset('0%'),
+											elm$svg$Svg$Attributes$stopColor(colorString),
+											elm$svg$Svg$Attributes$stopOpacity('0')
+										]),
+									_List_Nil),
+									A2(
+									elm$svg$Svg$stop,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$offset('63.1%'),
+											elm$svg$Svg$Attributes$stopColor(colorString),
+											elm$svg$Svg$Attributes$stopOpacity('.6')
+										]),
+									_List_Nil),
+									A2(
+									elm$svg$Svg$stop,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$offset('100%'),
+											elm$svg$Svg$Attributes$stopColor(colorString)
+										]),
+									_List_Nil)
+								]))
+						])),
+					A2(
+					elm$svg$Svg$g,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							elm$svg$Svg$Attributes$fillRule('evenodd'),
+							elm$svg$Svg$Attributes$transform('translate(1 1)')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							elm$svg$Svg$path,
+							_List_fromArray(
+								[
+									elm$svg$Svg$Attributes$d('M36 18C36 8 28 0 18 0'),
+									elm$svg$Svg$Attributes$stroke('url(#' + (idElement + ')')),
+									elm$svg$Svg$Attributes$strokeWidth('2')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$svg$Svg$animateTransform,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('transform'),
+											elm$svg$Svg$Attributes$dur(speed),
+											elm$svg$Svg$Attributes$from('0 18 18'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite'),
+											elm$svg$Svg$Attributes$to('360 18 18'),
+											elm$svg$Svg$Attributes$type_('rotate')
+										]),
+									_List_Nil)
+								])),
+							A2(
+							elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									elm$svg$Svg$Attributes$cx('36'),
+									elm$svg$Svg$Attributes$cy('18'),
+									elm$svg$Svg$Attributes$fill(colorString),
+									elm$svg$Svg$Attributes$r('1')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$svg$Svg$animateTransform,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('transform'),
+											elm$svg$Svg$Attributes$dur(speed),
+											elm$svg$Svg$Attributes$from('0 18 18'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite'),
+											elm$svg$Svg$Attributes$to('360 18 18'),
+											elm$svg$Svg$Attributes$type_('rotate')
+										]),
+									_List_Nil)
+								]))
+						]))
+				]));
+	});
+var elm$svg$Svg$animate = elm$svg$Svg$trustedNode('animate');
+var elm$svg$Svg$Attributes$values = function (value) {
+	return A2(
+		_VirtualDom_attribute,
+		'values',
+		_VirtualDom_noJavaScriptUri(value));
+};
+var lucamug$style_framework$Framework$SpinnerNew$spinnerThreeCirclesHtml = F2(
+	function (size, color) {
+		var colorString = lucamug$style_framework$Framework$ColorNew$toRgbaString(color);
+		return A2(
+			elm$svg$Svg$svg,
+			_List_fromArray(
+				[
+					elm$svg$Svg$Attributes$viewBox('10 26 44 12'),
+					elm$svg$Svg$Attributes$xmlSpace('http://www.w3.org/2000/svg'),
+					elm$svg$Svg$Attributes$height(
+					elm$core$String$fromInt(size))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$g,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									elm$svg$Svg$Attributes$cx('16'),
+									elm$svg$Svg$Attributes$cy('32'),
+									elm$svg$Svg$Attributes$strokeWidth('0'),
+									elm$svg$Svg$Attributes$r('4.26701'),
+									elm$svg$Svg$Attributes$fill(colorString)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$svg$Svg$animate,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('fill-opacity'),
+											elm$svg$Svg$Attributes$dur('750ms'),
+											elm$svg$Svg$Attributes$values('.5;.6;.8;1;.8;.6;.5;.5'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite')
+										]),
+									_List_Nil),
+									A2(
+									elm$svg$Svg$animate,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('r'),
+											elm$svg$Svg$Attributes$dur('750ms'),
+											elm$svg$Svg$Attributes$values('3;3;4;5;6;5;4;3'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite')
+										]),
+									_List_Nil)
+								])),
+							A2(
+							elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									elm$svg$Svg$Attributes$cx('32'),
+									elm$svg$Svg$Attributes$cy('32'),
+									elm$svg$Svg$Attributes$strokeWidth('0'),
+									elm$svg$Svg$Attributes$r('5.26701'),
+									elm$svg$Svg$Attributes$fill(colorString)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$svg$Svg$animate,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('fill-opacity'),
+											elm$svg$Svg$Attributes$dur('750ms'),
+											elm$svg$Svg$Attributes$values('.5;.5;.6;.8;1;.8;.6;.5'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite')
+										]),
+									_List_Nil),
+									A2(
+									elm$svg$Svg$animate,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('r'),
+											elm$svg$Svg$Attributes$dur('750ms'),
+											elm$svg$Svg$Attributes$values('4;3;3;4;5;6;5;4'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite')
+										]),
+									_List_Nil)
+								])),
+							A2(
+							elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									elm$svg$Svg$Attributes$cx('48'),
+									elm$svg$Svg$Attributes$cy('32'),
+									elm$svg$Svg$Attributes$strokeWidth('0'),
+									elm$svg$Svg$Attributes$r('5.73299'),
+									elm$svg$Svg$Attributes$fill(colorString)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$svg$Svg$animate,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('fill-opacity'),
+											elm$svg$Svg$Attributes$dur('750ms'),
+											elm$svg$Svg$Attributes$values('.6;.5;.5;.6;.8;1;.8;.6'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite')
+										]),
+									_List_Nil),
+									A2(
+									elm$svg$Svg$animate,
+									_List_fromArray(
+										[
+											elm$svg$Svg$Attributes$attributeName('r'),
+											elm$svg$Svg$Attributes$dur('750ms'),
+											elm$svg$Svg$Attributes$values('5;4;3;3;4;5;6;5'),
+											elm$svg$Svg$Attributes$repeatCount('indefinite')
+										]),
+									_List_Nil)
+								]))
+						]))
+				]));
+	});
+var elm$core$Basics$always = F2(
+	function (a, _n0) {
+		return a;
+	});
+var elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var mdgriffith$elm_ui$Internal$Model$Unstyled = function (a) {
+	return {$: 'Unstyled', a: a};
+};
+var mdgriffith$elm_ui$Internal$Model$unstyled = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Unstyled, elm$core$Basics$always);
+var mdgriffith$elm_ui$Element$html = mdgriffith$elm_ui$Internal$Model$unstyled;
+var lucamug$style_framework$Framework$SpinnerNew$spinner = F3(
+	function (sp, size, color) {
+		return mdgriffith$elm_ui$Element$html(
+			function () {
+				if (sp.$ === 'ThreeCircles') {
+					return A2(lucamug$style_framework$Framework$SpinnerNew$spinnerThreeCirclesHtml, size, color);
+				} else {
+					return A2(lucamug$style_framework$Framework$SpinnerNew$spinnerRotationHtml, size, color);
+				}
+			}());
+	});
 var mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
 	return {$: 'AlignX', a: a};
 };
@@ -4910,61 +5348,6 @@ var mdgriffith$elm_ui$Internal$Model$contextClasses = function (context) {
 			return mdgriffith$elm_ui$Internal$Model$pageClass;
 	}
 };
-var elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
-			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							elm$core$List$foldl,
-							fn,
-							acc,
-							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
-			}
-		}
-	});
-var elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
-	});
 var elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
 		return true;
@@ -4978,9 +5361,6 @@ var mdgriffith$elm_ui$Internal$Model$Keyed = function (a) {
 var mdgriffith$elm_ui$Internal$Model$NoStyleSheet = {$: 'NoStyleSheet'};
 var mdgriffith$elm_ui$Internal$Model$Styled = function (a) {
 	return {$: 'Styled', a: a};
-};
-var mdgriffith$elm_ui$Internal$Model$Unstyled = function (a) {
-	return {$: 'Unstyled', a: a};
 };
 var mdgriffith$elm_ui$Internal$Model$addChildren = F2(
 	function (existing, nearbyChildren) {
@@ -5000,20 +5380,6 @@ var mdgriffith$elm_ui$Internal$Model$addChildren = F2(
 					behind,
 					_Utils_ap(existing, inFront));
 		}
-	});
-var elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
 	});
 var mdgriffith$elm_ui$Internal$Model$addKeyedChildren = F3(
 	function (key, existing, nearbyChildren) {
@@ -5344,7 +5710,6 @@ var mdgriffith$elm_ui$Internal$Model$Style = F2(
 	function (a, b) {
 		return {$: 'Style', a: a, b: b};
 	});
-var elm$core$String$fromFloat = _String_fromNumber;
 var mdgriffith$elm_ui$Internal$Model$formatColor = function (_n0) {
 	var red = _n0.a;
 	var green = _n0.b;
@@ -10169,11 +10534,6 @@ var mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
 	function (a, b) {
 		return {$: 'TransformComponent', a: a, b: b};
 	});
-var elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var mdgriffith$elm_ui$Internal$Model$Text = function (a) {
@@ -10300,7 +10660,6 @@ var mdgriffith$elm_ui$Element$mouseOver = function (decs) {
 			mdgriffith$elm_ui$Internal$Model$Hover,
 			mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
 };
-var mdgriffith$elm_ui$Element$none = mdgriffith$elm_ui$Internal$Model$Empty;
 var mdgriffith$elm_ui$Internal$Flag$padding = mdgriffith$elm_ui$Internal$Flag$flag(2);
 var mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
 	function (a, b, c, d, e) {
@@ -10416,6 +10775,7 @@ var lucamug$style_framework$Framework$Button$buttonAttr = function (modifiers) {
 		{color: lucamug$style_framework$Framework$Button$colorDefault, size: lucamug$style_framework$Framework$Button$SizeDefault, state: lucamug$style_framework$Framework$Button$StateDefault},
 		modifiers);
 	var fontSize = lucamug$style_framework$Framework$Button$toPx(confButton.size);
+	var spinnerColor = _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$ColorNew$greyDark : lucamug$style_framework$Framework$ColorNew$white;
 	var inFrontAddon = function () {
 		var _n6 = confButton.state;
 		switch (_n6.$) {
@@ -10427,7 +10787,7 @@ var lucamug$style_framework$Framework$Button$buttonAttr = function (modifiers) {
 							mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[mdgriffith$elm_ui$Element$centerY, mdgriffith$elm_ui$Element$centerX]),
-							mdgriffith$elm_ui$Element$none))
+							A3(lucamug$style_framework$Framework$SpinnerNew$spinner, lucamug$style_framework$Framework$SpinnerNew$Rotation, fontSize, spinnerColor)))
 					]);
 			case 'StateWaiting':
 				return _List_fromArray(
@@ -10437,13 +10797,12 @@ var lucamug$style_framework$Framework$Button$buttonAttr = function (modifiers) {
 							mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[mdgriffith$elm_ui$Element$centerY, mdgriffith$elm_ui$Element$centerX]),
-							mdgriffith$elm_ui$Element$none))
+							A3(lucamug$style_framework$Framework$SpinnerNew$spinner, lucamug$style_framework$Framework$SpinnerNew$ThreeCircles, fontSize - 4, spinnerColor)))
 					]);
 			default:
 				return _List_Nil;
 		}
 	}();
-	var spinnerColor = _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$ColorNew$greyDark : lucamug$style_framework$Framework$ColorNew$white;
 	var cc = confButton.color;
 	var fontColor = function () {
 		var _n5 = confButton.state;

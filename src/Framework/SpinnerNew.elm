@@ -23,6 +23,7 @@ Used internally to generate the [Style Guide](https://lucamug.github.io/)
 
 import Element
 import Framework.ColorNew
+import Framework.ConfigurationNew as Configuration
 import Html
 import Svg
 import Svg.Attributes as SA
@@ -41,8 +42,8 @@ introspection =
     , signature = ""
     , variations =
         [ ( "Spinners"
-          , [ ( spinner ThreeCircles 32 Framework.ColorNew.black, "spinner ThreeCircles 32 Framework.ColorNew.black" )
-            , ( spinner Rotation 32 Framework.ColorNew.black, "spinner Rotation 32 Framework.ColorNew.black" )
+          , [ ( spinner ThreeCircles 32 Configuration.default.color.black, "spinner ThreeCircles 32 Configuration.default.black" )
+            , ( spinner Rotation 32 Configuration.default.color.black, "spinner Rotation 32 Configuration.default.black" )
             ]
           )
         ]
@@ -76,7 +77,7 @@ spinnerThreeCirclesHtml : Int -> Element.Color -> Html.Html msg
 spinnerThreeCirclesHtml size color =
     let
         colorString =
-            Framework.ColorNew.toRgbaString color
+            Framework.ColorNew.toHexString color
     in
     Svg.svg
         [ SA.viewBox "10 26 44 12"
@@ -128,7 +129,7 @@ spinnerRotationHtml : Int -> Element.Color -> Html.Html msg
 spinnerRotationHtml size color =
     let
         colorString =
-            Framework.ColorNew.toRgbaString color
+            Debug.log "clr" <| Framework.ColorNew.toHexString color
 
         idElement =
             "id" ++ String.dropLeft 1 colorString

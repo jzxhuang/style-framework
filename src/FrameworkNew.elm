@@ -797,7 +797,7 @@ viewPage maybeWindowSize model =
             ]
           <|
             viewContentColumn model
-        , el [] (text <| String.fromFloat (Framework.ColorNew.luminance Framework.ColorNew.danger))
+        , el [] (text <| String.fromFloat (Framework.ColorNew.findLuminance Framework.ColorNew.danger))
         ]
 
 

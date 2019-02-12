@@ -4399,19 +4399,233 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
-var elm$core$Tuple$second = function (_n0) {
-	var y = _n0.b;
-	return y;
+var lucamug$style_framework$Framework$ModifierNew$Danger = {$: 'Danger'};
+var lucamug$style_framework$Framework$ModifierNew$Disabled = {$: 'Disabled'};
+var lucamug$style_framework$Framework$ModifierNew$Info = {$: 'Info'};
+var lucamug$style_framework$Framework$ModifierNew$Jumbo = {$: 'Jumbo'};
+var lucamug$style_framework$Framework$ModifierNew$Large = {$: 'Large'};
+var lucamug$style_framework$Framework$ModifierNew$Loading = {$: 'Loading'};
+var lucamug$style_framework$Framework$ModifierNew$Outlined = {$: 'Outlined'};
+var lucamug$style_framework$Framework$ModifierNew$Primary = {$: 'Primary'};
+var lucamug$style_framework$Framework$ModifierNew$Small = {$: 'Small'};
+var lucamug$style_framework$Framework$ModifierNew$Success = {$: 'Success'};
+var lucamug$style_framework$Framework$ModifierNew$Warning = {$: 'Warning'};
+var elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var lucamug$style_framework$Framework$ButtonNew$Default = {$: 'Default'};
+var lucamug$style_framework$Framework$ButtonNew$defaultConfig = {color: elm$core$Maybe$Nothing, outlined: false, size: elm$core$Maybe$Nothing, state: lucamug$style_framework$Framework$ButtonNew$Default};
+var elm$core$Basics$negate = function (n) {
+	return -n;
 };
+var elm$core$Basics$neq = _Utils_notEqual;
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
-var lucamug$style_framework$Framework$Button$SizeDefault = {$: 'SizeDefault'};
-var lucamug$style_framework$Framework$Button$StateDefault = {$: 'StateDefault'};
-var lucamug$style_framework$Framework$Button$StateDisabled = {$: 'StateDisabled'};
+var lucamug$style_framework$Framework$ButtonNew$Disabled = {$: 'Disabled'};
+var elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var mdgriffith$elm_ui$Internal$Flag$Flag = function (a) {
+	return {$: 'Flag', a: a};
+};
+var mdgriffith$elm_ui$Internal$Flag$Second = function (a) {
+	return {$: 'Second', a: a};
+};
+var mdgriffith$elm_ui$Internal$Flag$flag = function (i) {
+	return (i > 31) ? mdgriffith$elm_ui$Internal$Flag$Second(1 << (i - 32)) : mdgriffith$elm_ui$Internal$Flag$Flag(1 << i);
+};
+var mdgriffith$elm_ui$Internal$Flag$padding = mdgriffith$elm_ui$Internal$Flag$flag(2);
+var mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
+	function (a, b, c, d, e) {
+		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
+	});
+var mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
+	function (a, b) {
+		return {$: 'StyleClass', a: a, b: b};
+	});
+var mdgriffith$elm_ui$Element$paddingXY = F2(
+	function (x, y) {
+		return _Utils_eq(x, y) ? A2(
+			mdgriffith$elm_ui$Internal$Model$StyleClass,
+			mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + elm$core$String$fromInt(x),
+				x,
+				x,
+				x,
+				x)) : A2(
+			mdgriffith$elm_ui$Internal$Model$StyleClass,
+			mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + (elm$core$String$fromInt(x) + ('-' + elm$core$String$fromInt(y))),
+				y,
+				x,
+				y,
+				x));
+	});
+var lucamug$style_framework$Framework$ButtonNew$toButtonPadding = F2(
+	function (configuration, maybeSize) {
+		return function (padding_) {
+			return A2(mdgriffith$elm_ui$Element$paddingXY, padding_.x, padding_.y);
+		}(
+			function () {
+				if (maybeSize.$ === 'Just') {
+					var size = maybeSize.a;
+					switch (size.$) {
+						case 'Small':
+							return configuration.button.paddingSmall;
+						case 'Large':
+							return configuration.button.paddingLarge;
+						default:
+							return configuration.button.paddingJumbo;
+					}
+				} else {
+					return configuration.button.paddingDefault;
+				}
+			}());
+	});
+var lucamug$style_framework$Framework$ButtonNew$toFontSize = F2(
+	function (configuration, maybeSize) {
+		if (maybeSize.$ === 'Just') {
+			var size = maybeSize.a;
+			switch (size.$) {
+				case 'Small':
+					return configuration.font.small;
+				case 'Large':
+					return configuration.font.large;
+				default:
+					return configuration.font.jumbo;
+			}
+		} else {
+			return configuration.font._default;
+		}
+	});
+var elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var elm$core$Basics$abs = function (n) {
+	return (n < 0) ? (-n) : n;
+};
+var elm$core$Basics$clamp = F3(
+	function (low, high, number) {
+		return (_Utils_cmp(number, low) < 0) ? low : ((_Utils_cmp(number, high) > 0) ? high : number);
+	});
+var elm$core$Basics$modBy = _Basics_modBy;
+var lucamug$style_framework$Framework$ColorNew$hslaToRgba = function (hslaColor) {
+	var saturation = A3(elm$core$Basics$clamp, 0, 100, hslaColor.saturation) / 100;
+	var lightness = A3(elm$core$Basics$clamp, 0, 100, hslaColor.lightness) / 100;
+	var hue360 = A2(
+		elm$core$Basics$modBy,
+		360,
+		elm$core$Basics$floor(hslaColor.hue));
+	var hueIsBetween = F2(
+		function (lowerBound, upperBound) {
+			return (_Utils_cmp(lowerBound, hue360) < 1) && (_Utils_cmp(hue360, upperBound) < 1);
+		});
+	var chroma = (1 - elm$core$Basics$abs((2 * lightness) - 1)) * saturation;
+	var lightnessModifier = lightness - (chroma / 2);
+	var zigUp = function (xIntercept) {
+		return (chroma * (hue360 - xIntercept)) / 60;
+	};
+	var zigDown = function (xIntercept) {
+		return (-1) * zigUp(xIntercept);
+	};
+	var _n0 = A2(hueIsBetween, 0, 60) ? _Utils_Tuple3(
+		chroma,
+		zigUp(0),
+		0) : (A2(hueIsBetween, 60, 120) ? _Utils_Tuple3(
+		zigDown(120),
+		chroma,
+		0) : (A2(hueIsBetween, 120, 180) ? _Utils_Tuple3(
+		0,
+		chroma,
+		zigUp(120)) : (A2(hueIsBetween, 180, 240) ? _Utils_Tuple3(
+		0,
+		zigDown(240),
+		chroma) : (A2(hueIsBetween, 240, 300) ? _Utils_Tuple3(
+		zigUp(240),
+		0,
+		chroma) : _Utils_Tuple3(
+		chroma,
+		0,
+		zigDown(360))))));
+	var r = _n0.a;
+	var g = _n0.b;
+	var b = _n0.c;
+	return {alpha: hslaColor.alpha, blue: b + lightnessModifier, green: g + lightnessModifier, red: r + lightnessModifier};
+};
 var mdgriffith$elm_ui$Internal$Model$Rgba = F4(
 	function (a, b, c, d) {
 		return {$: 'Rgba', a: a, b: b, c: c, d: d};
 	});
+var mdgriffith$elm_ui$Element$fromRgb = function (clr) {
+	return A4(mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
+};
+var lucamug$style_framework$Framework$ColorNew$fromHsla = A2(elm$core$Basics$composeR, lucamug$style_framework$Framework$ColorNew$hslaToRgba, mdgriffith$elm_ui$Element$fromRgb);
+var elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var lucamug$style_framework$Framework$ColorNew$rgbaToHsla = function (rgba) {
+	var r = rgba.red;
+	var g = rgba.green;
+	var b = rgba.blue;
+	var cMax = A2(
+		elm$core$Basics$max,
+		A2(elm$core$Basics$max, r, g),
+		b);
+	var cMin = A2(
+		elm$core$Basics$min,
+		A2(elm$core$Basics$min, r, g),
+		b);
+	var chroma = cMax - cMin;
+	var lightness = (cMax + cMin) / 2;
+	var saturation = (!lightness) ? 0 : (chroma / (1 - elm$core$Basics$abs((2 * lightness) - 1)));
+	var hue = (!chroma) ? 0 : (60 * (_Utils_eq(cMax, r) ? ((g - b) / chroma) : (_Utils_eq(cMax, g) ? (((b - r) / chroma) + 2) : (((r - g) / chroma) + 4))));
+	return {
+		alpha: rgba.alpha,
+		hue: (hue < 0) ? (hue + 360) : hue,
+		lightness: lightness * 100,
+		saturation: saturation * 100
+	};
+};
+var mdgriffith$elm_ui$Element$toRgb = function (_n0) {
+	var r = _n0.a;
+	var g = _n0.b;
+	var b = _n0.c;
+	var a = _n0.d;
+	return {alpha: a, blue: b, green: g, red: r};
+};
+var lucamug$style_framework$Framework$ColorNew$toHsla = A2(elm$core$Basics$composeR, mdgriffith$elm_ui$Element$toRgb, lucamug$style_framework$Framework$ColorNew$rgbaToHsla);
+var lucamug$style_framework$Framework$ColorNew$adjustLightness = F2(
+	function (delta, color) {
+		return function (hslaColor) {
+			return lucamug$style_framework$Framework$ColorNew$fromHsla(
+				_Utils_update(
+					hslaColor,
+					{lightness: hslaColor.lightness + delta}));
+		}(
+			lucamug$style_framework$Framework$ColorNew$toHsla(color));
+	});
+var elm$core$Basics$pow = _Basics_pow;
+var lucamug$style_framework$Framework$ColorNew$findLuminance = function (color) {
+	var sRgb = function (channel) {
+		return (channel <= 3.928e-2) ? (channel / 12.92) : A2(elm$core$Basics$pow, (channel + 5.5e-2) / 1.055, 2.4);
+	};
+	var rgbaColor = mdgriffith$elm_ui$Element$toRgb(color);
+	var r = sRgb(rgbaColor.red);
+	var g = sRgb(rgbaColor.green);
+	var b = sRgb(rgbaColor.blue);
+	return ((0.2126 * r) + (0.7152 * g)) + (7.22e-2 * b);
+};
 var mdgriffith$elm_ui$Element$rgba255 = F4(
 	function (red, green, blue, a) {
 		return A4(mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, a);
@@ -4432,430 +4646,48 @@ var lucamug$style_framework$Framework$ConfigurationNew$colors = {
 	greyLighter: A4(mdgriffith$elm_ui$Element$rgba255, 219, 219, 219, 1.0),
 	info: A4(mdgriffith$elm_ui$Element$rgba255, 32, 156, 238, 1.0),
 	light: A4(mdgriffith$elm_ui$Element$rgba255, 245, 245, 245, 1.0),
+	luminanceThreshold: 0.55,
 	orange: A4(mdgriffith$elm_ui$Element$rgba255, 255, 165, 0, 1.0),
 	pink: A4(mdgriffith$elm_ui$Element$rgba255, 255, 192, 203, 1.0),
 	primary: A4(mdgriffith$elm_ui$Element$rgba255, 0, 209, 178, 1.0),
 	purple: A4(mdgriffith$elm_ui$Element$rgba255, 128, 0, 128, 1.0),
 	red: A4(mdgriffith$elm_ui$Element$rgba255, 255, 0, 0, 1.0),
 	success: A4(mdgriffith$elm_ui$Element$rgba255, 35, 209, 96, 1.0),
+	transparent: A4(mdgriffith$elm_ui$Element$rgba255, 0, 0, 0, 0),
 	warning: A4(mdgriffith$elm_ui$Element$rgba255, 255, 221, 87, 1.0),
 	white: A4(mdgriffith$elm_ui$Element$rgba255, 255, 255, 255, 1.0),
 	whiteBis: A4(mdgriffith$elm_ui$Element$rgba255, 250, 250, 250, 1.0),
 	whiteTer: A4(mdgriffith$elm_ui$Element$rgba255, 245, 245, 245, 1.0),
 	yellow: A4(mdgriffith$elm_ui$Element$rgba255, 255, 255, 0, 1.0)
 };
-var lucamug$style_framework$Framework$ColorNew$greyLighter = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter;
-var lucamug$style_framework$Framework$Button$colorBorderDefault = lucamug$style_framework$Framework$ColorNew$greyLighter;
-var lucamug$style_framework$Framework$ColorNew$white = lucamug$style_framework$Framework$ConfigurationNew$colors.white;
-var lucamug$style_framework$Framework$Button$colorDefault = lucamug$style_framework$Framework$ColorNew$white;
-var lucamug$style_framework$Framework$Button$SizeJumbo = {$: 'SizeJumbo'};
-var lucamug$style_framework$Framework$Button$SizeLarge = {$: 'SizeLarge'};
-var lucamug$style_framework$Framework$Button$SizeMedium = {$: 'SizeMedium'};
-var lucamug$style_framework$Framework$Button$SizeSmall = {$: 'SizeSmall'};
-var lucamug$style_framework$Framework$Button$StateLoading = {$: 'StateLoading'};
-var lucamug$style_framework$Framework$Button$StateOutlined = {$: 'StateOutlined'};
-var lucamug$style_framework$Framework$Button$StateWaiting = {$: 'StateWaiting'};
-var lucamug$style_framework$Framework$ColorNew$danger = lucamug$style_framework$Framework$ConfigurationNew$colors.danger;
-var lucamug$style_framework$Framework$ColorNew$info = lucamug$style_framework$Framework$ConfigurationNew$colors.info;
-var lucamug$style_framework$Framework$ColorNew$muted = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight;
-var lucamug$style_framework$Framework$ColorNew$primary = lucamug$style_framework$Framework$ConfigurationNew$colors.primary;
-var lucamug$style_framework$Framework$ColorNew$success = lucamug$style_framework$Framework$ConfigurationNew$colors.success;
-var lucamug$style_framework$Framework$ColorNew$warning = lucamug$style_framework$Framework$ConfigurationNew$colors.warning;
-var lucamug$style_framework$Framework$Button$processConf = F2(
-	function (modifier, confButton) {
-		switch (modifier.$) {
-			case 'Muted':
-				return _Utils_update(
-					confButton,
-					{color: lucamug$style_framework$Framework$ColorNew$muted});
-			case 'Primary':
-				return _Utils_update(
-					confButton,
-					{color: lucamug$style_framework$Framework$ColorNew$primary});
-			case 'Success':
-				return _Utils_update(
-					confButton,
-					{color: lucamug$style_framework$Framework$ColorNew$success});
-			case 'Info':
-				return _Utils_update(
-					confButton,
-					{color: lucamug$style_framework$Framework$ColorNew$info});
-			case 'Warning':
-				return _Utils_update(
-					confButton,
-					{color: lucamug$style_framework$Framework$ColorNew$warning});
-			case 'Danger':
-				return _Utils_update(
-					confButton,
-					{color: lucamug$style_framework$Framework$ColorNew$danger});
-			case 'Small':
-				return _Utils_update(
-					confButton,
-					{size: lucamug$style_framework$Framework$Button$SizeSmall});
-			case 'Medium':
-				return _Utils_update(
-					confButton,
-					{size: lucamug$style_framework$Framework$Button$SizeMedium});
-			case 'Large':
-				return _Utils_update(
-					confButton,
-					{size: lucamug$style_framework$Framework$Button$SizeLarge});
-			case 'Jumbo':
-				return _Utils_update(
-					confButton,
-					{size: lucamug$style_framework$Framework$Button$SizeJumbo});
-			case 'Outlined':
-				return _Utils_update(
-					confButton,
-					{state: lucamug$style_framework$Framework$Button$StateOutlined});
-			case 'Loading':
-				return _Utils_update(
-					confButton,
-					{state: lucamug$style_framework$Framework$Button$StateLoading});
-			case 'Waiting':
-				return _Utils_update(
-					confButton,
-					{state: lucamug$style_framework$Framework$Button$StateWaiting});
-			default:
-				return _Utils_update(
-					confButton,
-					{state: lucamug$style_framework$Framework$Button$StateDisabled});
-		}
-	});
-var elm$core$String$toFloat = _String_toFloat;
-var elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
-var elm$core$Dict$Black = {$: 'Black'};
-var elm$core$Dict$RBNode_elm_builtin = F5(
-	function (a, b, c, d, e) {
-		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
-	});
-var elm$core$Basics$compare = _Utils_compare;
-var elm$core$Dict$Red = {$: 'Red'};
-var elm$core$Dict$balance = F5(
-	function (color, key, value, left, right) {
-		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
-			var _n1 = right.a;
-			var rK = right.b;
-			var rV = right.c;
-			var rLeft = right.d;
-			var rRight = right.e;
-			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
-				var _n3 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var lLeft = left.d;
-				var lRight = left.e;
-				return A5(
-					elm$core$Dict$RBNode_elm_builtin,
-					elm$core$Dict$Red,
-					key,
-					value,
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, lK, lV, lLeft, lRight),
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					elm$core$Dict$RBNode_elm_builtin,
-					color,
-					rK,
-					rV,
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, left, rLeft),
-					rRight);
-			}
-		} else {
-			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
-				var _n5 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var _n6 = left.d;
-				var _n7 = _n6.a;
-				var llK = _n6.b;
-				var llV = _n6.c;
-				var llLeft = _n6.d;
-				var llRight = _n6.e;
-				var lRight = left.e;
-				return A5(
-					elm$core$Dict$RBNode_elm_builtin,
-					elm$core$Dict$Red,
-					lK,
-					lV,
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, llK, llV, llLeft, llRight),
-					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, key, value, lRight, right));
-			} else {
-				return A5(elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
-			}
-		}
-	});
-var elm$core$Dict$insertHelp = F3(
-	function (key, value, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, elm$core$Dict$RBEmpty_elm_builtin, elm$core$Dict$RBEmpty_elm_builtin);
-		} else {
-			var nColor = dict.a;
-			var nKey = dict.b;
-			var nValue = dict.c;
-			var nLeft = dict.d;
-			var nRight = dict.e;
-			var _n1 = A2(elm$core$Basics$compare, key, nKey);
-			switch (_n1.$) {
-				case 'LT':
-					return A5(
-						elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						A3(elm$core$Dict$insertHelp, key, value, nLeft),
-						nRight);
-				case 'EQ':
-					return A5(elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
-				default:
-					return A5(
-						elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						nLeft,
-						A3(elm$core$Dict$insertHelp, key, value, nRight));
-			}
-		}
-	});
-var elm$core$Dict$insert = F3(
-	function (key, value, dict) {
-		var _n0 = A3(elm$core$Dict$insertHelp, key, value, dict);
-		if ((_n0.$ === 'RBNode_elm_builtin') && (_n0.a.$ === 'Red')) {
-			var _n1 = _n0.a;
-			var k = _n0.b;
-			var v = _n0.c;
-			var l = _n0.d;
-			var r = _n0.e;
-			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, k, v, l, r);
-		} else {
-			var x = _n0;
-			return x;
-		}
-	});
-var elm$core$Dict$fromList = function (assocs) {
-	return A3(
-		elm$core$List$foldl,
-		F2(
-			function (_n0, dict) {
-				var key = _n0.a;
-				var value = _n0.b;
-				return A3(elm$core$Dict$insert, key, value, dict);
-			}),
-		elm$core$Dict$empty,
-		assocs);
-};
-var lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes = {size1: '3.00', size2: '2.50', size3: '2.00', size4: '1.50', size5: '1.25', size6: '1.00', size7: '0.75'};
-var lucamug$style_framework$Framework$ConfigurationNew$configuration_ = elm$core$Dict$fromList(
-	_List_fromArray(
-		[
-			_Utils_Tuple2('font_url', 'https://fonts.googleapis.com/css?family=Noto+Sans'),
-			_Utils_Tuple2('font_typeface', 'Noto Sans'),
-			_Utils_Tuple2('font_typeface_fallback', 'sans-serif'),
-			_Utils_Tuple2('size1', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size1),
-			_Utils_Tuple2('size2', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size2),
-			_Utils_Tuple2('size3', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size3),
-			_Utils_Tuple2('size4', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size4),
-			_Utils_Tuple2('size5', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size5),
-			_Utils_Tuple2('size6', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size6),
-			_Utils_Tuple2('size7', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size7),
-			_Utils_Tuple2('size_small', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size7),
-			_Utils_Tuple2('size_normal', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size6),
-			_Utils_Tuple2('size_medium', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size5),
-			_Utils_Tuple2('size_large', lucamug$style_framework$Framework$ConfigurationNew$bulmaSizes.size4),
-			_Utils_Tuple2('moveDownPlaceHolderLarge', '31'),
-			_Utils_Tuple2('moveDownPlaceHolderSmall', '30'),
-			_Utils_Tuple2('transparent', '#ffffff00'),
-			_Utils_Tuple2('buttonFontSmall', '12'),
-			_Utils_Tuple2('buttonFontDefault', '16'),
-			_Utils_Tuple2('buttonFontMedium', '20'),
-			_Utils_Tuple2('buttonFontLarge', '24'),
-			_Utils_Tuple2('buttonFontJumbo', '16'),
-			_Utils_Tuple2('buttonPaddingXSmall', '9'),
-			_Utils_Tuple2('buttonPaddingYSmall', '3'),
-			_Utils_Tuple2('buttonPaddingXDefault', '12'),
-			_Utils_Tuple2('buttonPaddingYDefault', '5'),
-			_Utils_Tuple2('buttonPaddingXMedium', '15'),
-			_Utils_Tuple2('buttonPaddingYMedium', '7'),
-			_Utils_Tuple2('buttonPaddingXLarge', '18'),
-			_Utils_Tuple2('buttonPaddingYLarge', '9'),
-			_Utils_Tuple2('buttonPaddingXJumbo', '24'),
-			_Utils_Tuple2('buttonPaddingYJumbo', '24')
-		]));
-var elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _n1 = A2(elm$core$Basics$compare, targetKey, key);
-				switch (_n1.$) {
-					case 'LT':
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 'EQ':
-						return elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
-		}
-	});
-var lucamug$style_framework$Framework$ConfigurationNew$getValue = F3(
-	function (key, original, replacement) {
-		var repl = A2(elm$core$Dict$get, key, replacement);
-		var orig = A2(elm$core$Dict$get, key, original);
-		if (repl.$ === 'Just') {
-			var value = repl.a;
-			return elm$core$Maybe$Just(value);
-		} else {
-			if (orig.$ === 'Just') {
-				var value = orig.a;
-				return elm$core$Maybe$Just(value);
-			} else {
-				return elm$core$Maybe$Nothing;
-			}
-		}
-	});
-var lucamug$style_framework$MyStyle$configuration = elm$core$Dict$fromList(
-	_List_fromArray(
-		[
-			_Utils_Tuple2('primary', '#ood1b2')
-		]));
-var lucamug$style_framework$Framework$ConfigurationNew$getString = function (key) {
-	return A2(
-		elm$core$Maybe$withDefault,
-		'',
-		A3(lucamug$style_framework$Framework$ConfigurationNew$getValue, key, lucamug$style_framework$Framework$ConfigurationNew$configuration_, lucamug$style_framework$MyStyle$configuration));
-};
-var lucamug$style_framework$Framework$ConfigurationNew$getFloat = function (key) {
-	var _n0 = elm$core$String$toFloat(
-		lucamug$style_framework$Framework$ConfigurationNew$getString(key));
-	if (_n0.$ === 'Just') {
-		var value2 = _n0.a;
-		return value2;
-	} else {
-		return 0;
-	}
-};
-var elm$core$Basics$round = _Basics_round;
-var lucamug$style_framework$Framework$ConfigurationNew$getInt = function (key) {
-	return elm$core$Basics$round(
-		lucamug$style_framework$Framework$ConfigurationNew$getFloat(key));
-};
-var mdgriffith$elm_ui$Internal$Model$Monospace = {$: 'Monospace'};
-var mdgriffith$elm_ui$Element$Font$monospace = mdgriffith$elm_ui$Internal$Model$Monospace;
 var mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
 var mdgriffith$elm_ui$Element$Font$sansSerif = mdgriffith$elm_ui$Internal$Model$SansSerif;
-var mdgriffith$elm_ui$Internal$Model$Serif = {$: 'Serif'};
-var mdgriffith$elm_ui$Element$Font$serif = mdgriffith$elm_ui$Internal$Model$Serif;
-var lucamug$style_framework$Framework$ConfigurationNew$getTypeface = function (key) {
-	var value = lucamug$style_framework$Framework$ConfigurationNew$getString(key);
-	return (value === 'sans-serif') ? mdgriffith$elm_ui$Element$Font$sansSerif : ((value === 'monospace') ? mdgriffith$elm_ui$Element$Font$monospace : ((value === 'cursive') ? mdgriffith$elm_ui$Element$Font$serif : mdgriffith$elm_ui$Element$Font$serif));
-};
-var lucamug$style_framework$Framework$ConfigurationNew$configuration = {
+var lucamug$style_framework$Framework$ConfigurationNew$default = {
 	button: {
-		fontDefault: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontDefault'),
-		fontJumbo: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontJumbo'),
-		fontLarge: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontLarge'),
-		fontMedium: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontMedium'),
-		fontSmall: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonFontSmall'),
-		paddingXDefault: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXDefault'),
-		paddingXJumbo: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXJumbo'),
-		paddingXLarge: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXLarge'),
-		paddingXMedium: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXMedium'),
-		paddingXSmall: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingXSmall'),
-		paddingYDefault: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYDefault'),
-		paddingYJumbo: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYJumbo'),
-		paddingYLarge: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYLarge'),
-		paddingYMedium: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYMedium'),
-		paddingYSmall: lucamug$style_framework$Framework$ConfigurationNew$getInt('buttonPaddingYSmall')
+		defaultColorBackground: lucamug$style_framework$Framework$ConfigurationNew$colors.white,
+		defaultColorBorder: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter,
+		hoverColorDelta: 10,
+		paddingDefault: {x: 12, y: 5},
+		paddingJumbo: {x: 24, y: 24},
+		paddingLarge: {x: 18, y: 9},
+		paddingSmall: {x: 9, y: 3}
 	},
-	color: {background: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, black: lucamug$style_framework$Framework$ConfigurationNew$colors.black, blackBis: lucamug$style_framework$Framework$ConfigurationNew$colors.blackBis, blackTer: lucamug$style_framework$Framework$ConfigurationNew$colors.blackTer, blue: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, border: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter, border_hover: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, brown: lucamug$style_framework$Framework$ConfigurationNew$colors.brown, code: lucamug$style_framework$Framework$ConfigurationNew$colors.red, code_background: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, danger: lucamug$style_framework$Framework$ConfigurationNew$colors.danger, dark: lucamug$style_framework$Framework$ConfigurationNew$colors.dark, green: lucamug$style_framework$Framework$ConfigurationNew$colors.green, grey: lucamug$style_framework$Framework$ConfigurationNew$colors.grey, greyDark: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, greyDarker: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, greyLight: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, greyLighter: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter, info: lucamug$style_framework$Framework$ConfigurationNew$colors.info, light: lucamug$style_framework$Framework$ConfigurationNew$colors.light, link: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, link_active: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, link_active_border: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, link_focus: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, link_focus_border: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, link_hover: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, link_hover_border: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, link_invert: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, link_visited: lucamug$style_framework$Framework$ConfigurationNew$colors.purple, muted: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, orange: lucamug$style_framework$Framework$ConfigurationNew$colors.orange, pink: lucamug$style_framework$Framework$ConfigurationNew$colors.pink, pre: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, pre_background: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, primary: lucamug$style_framework$Framework$ConfigurationNew$colors.primary, purple: lucamug$style_framework$Framework$ConfigurationNew$colors.purple, red: lucamug$style_framework$Framework$ConfigurationNew$colors.red, success: lucamug$style_framework$Framework$ConfigurationNew$colors.success, text: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, text_light: lucamug$style_framework$Framework$ConfigurationNew$colors.grey, text_strong: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, warning: lucamug$style_framework$Framework$ConfigurationNew$colors.warning, white: lucamug$style_framework$Framework$ConfigurationNew$colors.white, whiteBis: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteBis, whiteTer: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, yellow: lucamug$style_framework$Framework$ConfigurationNew$colors.yellow},
-	font: {
-		typeface: lucamug$style_framework$Framework$ConfigurationNew$getString('font_typeface'),
-		typefaceFallback: lucamug$style_framework$Framework$ConfigurationNew$getTypeface('font_typeface_fallback'),
-		url: lucamug$style_framework$Framework$ConfigurationNew$getString('font_url')
-	},
-	moveDownPlaceholder: {
-		large: lucamug$style_framework$Framework$ConfigurationNew$getFloat('moveDownPlaceHolderLarge'),
-		small: lucamug$style_framework$Framework$ConfigurationNew$getFloat('moveDownPlaceHolderSmall')
-	},
-	size: {
-		size1: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size1'),
-		size2: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size2'),
-		size3: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size3'),
-		size4: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size4'),
-		size5: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size5'),
-		size6: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size6'),
-		size7: lucamug$style_framework$Framework$ConfigurationNew$getFloat('size7')
-	}
+	color: {black: lucamug$style_framework$Framework$ConfigurationNew$colors.black, blackBis: lucamug$style_framework$Framework$ConfigurationNew$colors.blackBis, blackTer: lucamug$style_framework$Framework$ConfigurationNew$colors.blackTer, blue: lucamug$style_framework$Framework$ConfigurationNew$colors.blue, brown: lucamug$style_framework$Framework$ConfigurationNew$colors.brown, danger: lucamug$style_framework$Framework$ConfigurationNew$colors.danger, dark: lucamug$style_framework$Framework$ConfigurationNew$colors.dark, green: lucamug$style_framework$Framework$ConfigurationNew$colors.green, grey: lucamug$style_framework$Framework$ConfigurationNew$colors.grey, greyDark: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark, greyDarker: lucamug$style_framework$Framework$ConfigurationNew$colors.greyDarker, greyLight: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight, greyLighter: lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter, info: lucamug$style_framework$Framework$ConfigurationNew$colors.info, light: lucamug$style_framework$Framework$ConfigurationNew$colors.light, luminanceThreshold: 0.55, orange: lucamug$style_framework$Framework$ConfigurationNew$colors.orange, pink: lucamug$style_framework$Framework$ConfigurationNew$colors.pink, primary: lucamug$style_framework$Framework$ConfigurationNew$colors.primary, purple: lucamug$style_framework$Framework$ConfigurationNew$colors.purple, red: lucamug$style_framework$Framework$ConfigurationNew$colors.red, success: lucamug$style_framework$Framework$ConfigurationNew$colors.success, textDark: lucamug$style_framework$Framework$ConfigurationNew$colors.black, textLight: lucamug$style_framework$Framework$ConfigurationNew$colors.white, transparent: lucamug$style_framework$Framework$ConfigurationNew$colors.transparent, warning: lucamug$style_framework$Framework$ConfigurationNew$colors.warning, white: lucamug$style_framework$Framework$ConfigurationNew$colors.white, whiteBis: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteBis, whiteTer: lucamug$style_framework$Framework$ConfigurationNew$colors.whiteTer, yellow: lucamug$style_framework$Framework$ConfigurationNew$colors.yellow},
+	font: {_default: 16, jumbo: 32, large: 24, small: 12, typeface: 'Noto Sans', typefaceFallback: mdgriffith$elm_ui$Element$Font$sansSerif, url: 'https://fonts.googleapis.com/css?family=Noto+Sans'}
 };
-var lucamug$style_framework$Framework$Button$toButtonPadding = function (size) {
-	switch (size.$) {
-		case 'SizeSmall':
-			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXSmall, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYSmall);
-		case 'SizeDefault':
-			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXDefault, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYDefault);
-		case 'SizeMedium':
-			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXMedium, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYMedium);
-		case 'SizeLarge':
-			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXLarge, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYLarge);
-		default:
-			return _Utils_Tuple2(lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingXJumbo, lucamug$style_framework$Framework$ConfigurationNew$configuration.button.paddingYJumbo);
-	}
-};
-var lucamug$style_framework$Framework$Button$toPx = function (size) {
-	switch (size.$) {
-		case 'SizeSmall':
-			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontSmall;
-		case 'SizeDefault':
-			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontDefault;
-		case 'SizeMedium':
-			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontMedium;
-		case 'SizeLarge':
-			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontLarge;
-		default:
-			return lucamug$style_framework$Framework$ConfigurationNew$configuration.button.fontJumbo;
-	}
-};
-var lucamug$style_framework$Framework$ColorNew$disabledButtonBackground = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLighter;
-var lucamug$style_framework$Framework$ColorNew$disabledButtonFont = lucamug$style_framework$Framework$ConfigurationNew$colors.greyLight;
-var lucamug$style_framework$Framework$ColorNew$greyDark = lucamug$style_framework$Framework$ConfigurationNew$colors.greyDark;
-var lucamug$style_framework$Framework$ColorNew$lighten = F2(
-	function (quantity, color) {
-		return color;
+var lucamug$style_framework$Framework$ColorNew$findIdealTextColor = F2(
+	function (configuration, color) {
+		return function (luminance) {
+			return (_Utils_cmp(luminance, lucamug$style_framework$Framework$ConfigurationNew$default.color.luminanceThreshold) > 0) ? configuration.color.textDark : configuration.color.textLight;
+		}(
+			lucamug$style_framework$Framework$ColorNew$findLuminance(color));
 	});
 var lucamug$style_framework$Framework$ColorNew$saturate = F2(
 	function (quantity, color) {
 		return color;
 	});
-var mdgriffith$elm_ui$Element$rgba = mdgriffith$elm_ui$Internal$Model$Rgba;
-var lucamug$style_framework$Framework$ColorNew$transparent = A4(mdgriffith$elm_ui$Element$rgba, 255, 255, 255, 0);
 var lucamug$style_framework$Framework$SpinnerNew$Rotation = {$: 'Rotation'};
-var lucamug$style_framework$Framework$SpinnerNew$ThreeCircles = {$: 'ThreeCircles'};
+var elm$core$Debug$log = _Debug_log;
 var elm$core$String$length = _String_length;
 var elm$core$String$slice = _String_slice;
 var elm$core$String$dropLeft = F2(
@@ -4981,45 +4813,83 @@ var elm$core$List$map = F2(
 			_List_Nil,
 			xs);
 	});
-var elm$core$String$fromFloat = _String_fromNumber;
-var mdgriffith$elm_ui$Element$toRgb = function (_n0) {
-	var r = _n0.a;
-	var g = _n0.b;
-	var b = _n0.c;
-	var a = _n0.d;
-	return {alpha: a, blue: b, green: g, red: r};
+var elm$core$String$cons = _String_cons;
+var elm$core$String$fromChar = function (_char) {
+	return A2(elm$core$String$cons, _char, '');
 };
+var elm$core$Bitwise$and = _Bitwise_and;
+var elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+var elm$core$String$repeatHelp = F3(
+	function (n, chunk, result) {
+		return (n <= 0) ? result : A3(
+			elm$core$String$repeatHelp,
+			n >> 1,
+			_Utils_ap(chunk, chunk),
+			(!(n & 1)) ? result : _Utils_ap(result, chunk));
+	});
+var elm$core$String$repeat = F2(
+	function (n, chunk) {
+		return A3(elm$core$String$repeatHelp, n, chunk, '');
+	});
+var elm$core$String$padLeft = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			A2(
+				elm$core$String$repeat,
+				n - elm$core$String$length(string),
+				elm$core$String$fromChar(_char)),
+			string);
+	});
+var elm$core$Char$fromCode = _Char_fromCode;
+var lucamug$style_framework$Framework$ColorNew$toRadix = function (n) {
+	var getChar = function (c) {
+		return (c < 10) ? elm$core$String$fromInt(c) : elm$core$String$fromChar(
+			elm$core$Char$fromCode(87 + c));
+	};
+	return (n < 16) ? getChar(n) : _Utils_ap(
+		lucamug$style_framework$Framework$ColorNew$toRadix((n / 16) | 0),
+		getChar(n % 16));
+};
+var lucamug$style_framework$Framework$ColorNew$toHex = A2(
+	elm$core$Basics$composeR,
+	lucamug$style_framework$Framework$ColorNew$toRadix,
+	A2(
+		elm$core$String$padLeft,
+		2,
+		_Utils_chr('0')));
+var elm$core$Basics$round = _Basics_round;
 var lucamug$style_framework$Framework$ColorNew$toRgba255 = function (color) {
 	var r = mdgriffith$elm_ui$Element$toRgb(color);
 	return {
 		alpha: r.alpha,
-		blue: elm$core$Basics$round(r.blue),
-		green: elm$core$Basics$round(r.green),
-		red: elm$core$Basics$round(r.red)
+		blue: elm$core$Basics$round(r.blue * 255),
+		green: elm$core$Basics$round(r.green * 255),
+		red: elm$core$Basics$round(r.red * 255)
 	};
 };
-var lucamug$style_framework$Framework$ColorNew$toRgbaString = function (color) {
-	return 'rgba(' + (function (rgba255) {
+var lucamug$style_framework$Framework$ColorNew$toHexString = function (color) {
+	return function (rgba255) {
 		return A2(
 			elm$core$String$join,
-			',',
-			_Utils_ap(
+			'',
+			A2(
+				elm$core$List$cons,
+				'#',
 				A2(
 					elm$core$List$map,
-					elm$core$String$fromInt,
+					lucamug$style_framework$Framework$ColorNew$toHex,
 					_List_fromArray(
-						[rgba255.red, rgba255.green, rgba255.blue])),
-				_List_fromArray(
-					[
-						elm$core$String$fromFloat(rgba255.alpha)
-					])));
+						[rgba255.red, rgba255.green, rgba255.blue]))));
 	}(
-		lucamug$style_framework$Framework$ColorNew$toRgba255(color)) + ')');
+		lucamug$style_framework$Framework$ColorNew$toRgba255(color));
 };
 var lucamug$style_framework$Framework$SpinnerNew$spinnerRotationHtml = F2(
 	function (size, color) {
 		var speed = '0.6s';
-		var colorString = lucamug$style_framework$Framework$ColorNew$toRgbaString(color);
+		var colorString = A2(
+			elm$core$Debug$log,
+			'clr',
+			lucamug$style_framework$Framework$ColorNew$toHexString(color));
 		var idElement = 'id' + A2(elm$core$String$dropLeft, 1, colorString);
 		return A2(
 			elm$svg$Svg$svg,
@@ -5148,7 +5018,7 @@ var elm$svg$Svg$Attributes$values = function (value) {
 };
 var lucamug$style_framework$Framework$SpinnerNew$spinnerThreeCirclesHtml = F2(
 	function (size, color) {
-		var colorString = lucamug$style_framework$Framework$ColorNew$toRgbaString(color);
+		var colorString = lucamug$style_framework$Framework$ColorNew$toHexString(color);
 		return A2(
 			elm$svg$Svg$svg,
 			_List_fromArray(
@@ -5450,23 +5320,12 @@ var elm$virtual_dom$VirtualDom$node = function (tag) {
 	return _VirtualDom_node(
 		_VirtualDom_noScript(tag));
 };
-var elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var mdgriffith$elm_ui$Internal$Flag$Flag = function (a) {
-	return {$: 'Flag', a: a};
-};
-var mdgriffith$elm_ui$Internal$Flag$Second = function (a) {
-	return {$: 'Second', a: a};
-};
-var mdgriffith$elm_ui$Internal$Flag$flag = function (i) {
-	return (i > 31) ? mdgriffith$elm_ui$Internal$Flag$Second(1 << (i - 32)) : mdgriffith$elm_ui$Internal$Flag$Flag(1 << i);
-};
 var mdgriffith$elm_ui$Internal$Flag$alignBottom = mdgriffith$elm_ui$Internal$Flag$flag(41);
 var mdgriffith$elm_ui$Internal$Flag$alignRight = mdgriffith$elm_ui$Internal$Flag$flag(40);
 var mdgriffith$elm_ui$Internal$Flag$centerX = mdgriffith$elm_ui$Internal$Flag$flag(42);
 var mdgriffith$elm_ui$Internal$Flag$centerY = mdgriffith$elm_ui$Internal$Flag$flag(43);
 var mdgriffith$elm_ui$Internal$Flag$heightBetween = mdgriffith$elm_ui$Internal$Flag$flag(45);
 var mdgriffith$elm_ui$Internal$Flag$heightFill = mdgriffith$elm_ui$Internal$Flag$flag(37);
-var elm$core$Bitwise$and = _Bitwise_and;
 var mdgriffith$elm_ui$Internal$Flag$present = F2(
 	function (myFlag, _n0) {
 		var fieldOne = _n0.a;
@@ -5481,15 +5340,161 @@ var mdgriffith$elm_ui$Internal$Flag$present = F2(
 	});
 var mdgriffith$elm_ui$Internal$Flag$widthBetween = mdgriffith$elm_ui$Internal$Flag$flag(44);
 var mdgriffith$elm_ui$Internal$Flag$widthFill = mdgriffith$elm_ui$Internal$Flag$flag(39);
+var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
 var elm$core$Set$Set_elm_builtin = function (a) {
 	return {$: 'Set_elm_builtin', a: a};
 };
 var elm$core$Set$empty = elm$core$Set$Set_elm_builtin(elm$core$Dict$empty);
+var elm$core$Tuple$second = function (_n0) {
+	var y = _n0.b;
+	return y;
+};
+var elm$core$Dict$Black = {$: 'Black'};
+var elm$core$Dict$RBNode_elm_builtin = F5(
+	function (a, b, c, d, e) {
+		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
+	});
+var elm$core$Basics$compare = _Utils_compare;
+var elm$core$Dict$Red = {$: 'Red'};
+var elm$core$Dict$balance = F5(
+	function (color, key, value, left, right) {
+		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
+			var _n1 = right.a;
+			var rK = right.b;
+			var rV = right.c;
+			var rLeft = right.d;
+			var rRight = right.e;
+			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+				var _n3 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var lLeft = left.d;
+				var lRight = left.e;
+				return A5(
+					elm$core$Dict$RBNode_elm_builtin,
+					elm$core$Dict$Red,
+					key,
+					value,
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, lK, lV, lLeft, lRight),
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					elm$core$Dict$RBNode_elm_builtin,
+					color,
+					rK,
+					rV,
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, left, rLeft),
+					rRight);
+			}
+		} else {
+			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
+				var _n5 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var _n6 = left.d;
+				var _n7 = _n6.a;
+				var llK = _n6.b;
+				var llV = _n6.c;
+				var llLeft = _n6.d;
+				var llRight = _n6.e;
+				var lRight = left.e;
+				return A5(
+					elm$core$Dict$RBNode_elm_builtin,
+					elm$core$Dict$Red,
+					lK,
+					lV,
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, llK, llV, llLeft, llRight),
+					A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, key, value, lRight, right));
+			} else {
+				return A5(elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+			}
+		}
+	});
+var elm$core$Dict$insertHelp = F3(
+	function (key, value, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Red, key, value, elm$core$Dict$RBEmpty_elm_builtin, elm$core$Dict$RBEmpty_elm_builtin);
+		} else {
+			var nColor = dict.a;
+			var nKey = dict.b;
+			var nValue = dict.c;
+			var nLeft = dict.d;
+			var nRight = dict.e;
+			var _n1 = A2(elm$core$Basics$compare, key, nKey);
+			switch (_n1.$) {
+				case 'LT':
+					return A5(
+						elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						A3(elm$core$Dict$insertHelp, key, value, nLeft),
+						nRight);
+				case 'EQ':
+					return A5(elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+				default:
+					return A5(
+						elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						nLeft,
+						A3(elm$core$Dict$insertHelp, key, value, nRight));
+			}
+		}
+	});
+var elm$core$Dict$insert = F3(
+	function (key, value, dict) {
+		var _n0 = A3(elm$core$Dict$insertHelp, key, value, dict);
+		if ((_n0.$ === 'RBNode_elm_builtin') && (_n0.a.$ === 'Red')) {
+			var _n1 = _n0.a;
+			var k = _n0.b;
+			var v = _n0.c;
+			var l = _n0.d;
+			var r = _n0.e;
+			return A5(elm$core$Dict$RBNode_elm_builtin, elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _n0;
+			return x;
+		}
+	});
 var elm$core$Set$insert = F2(
 	function (key, _n0) {
 		var dict = _n0.a;
 		return elm$core$Set$Set_elm_builtin(
 			A3(elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+	});
+var elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _n1 = A2(elm$core$Basics$compare, targetKey, key);
+				switch (_n1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
 	});
 var elm$core$Dict$member = F2(
 	function (key, dict) {
@@ -5710,6 +5715,7 @@ var mdgriffith$elm_ui$Internal$Model$Style = F2(
 	function (a, b) {
 		return {$: 'Style', a: a, b: b};
 	});
+var elm$core$String$fromFloat = _String_fromNumber;
 var mdgriffith$elm_ui$Internal$Model$formatColor = function (_n0) {
 	var red = _n0.a;
 	var green = _n0.b;
@@ -7689,13 +7695,6 @@ var mdgriffith$elm_ui$Internal$Model$staticRoot = A3(
 		[
 			elm$virtual_dom$VirtualDom$text(mdgriffith$elm_ui$Internal$Style$rules)
 		]));
-var elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
-	});
-var elm$core$Basics$negate = function (n) {
-	return -n;
-};
 var elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -7824,7 +7823,6 @@ var mdgriffith$elm_ui$Internal$Model$renderNullAdjustmentRule = F2(
 						]))
 				]));
 	});
-var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -10490,6 +10488,10 @@ var mdgriffith$elm_ui$Element$el = F2(
 				_List_fromArray(
 					[child])));
 	});
+var mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
+	return {$: 'Fill', a: a};
+};
+var mdgriffith$elm_ui$Element$fill = mdgriffith$elm_ui$Internal$Model$Fill(1);
 var mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
 	return {$: 'Attr', a: a};
 };
@@ -10507,10 +10509,6 @@ var mdgriffith$elm_ui$Internal$Model$Hover = {$: 'Hover'};
 var mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
 	function (a, b) {
 		return {$: 'PseudoSelector', a: a, b: b};
-	});
-var mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
-	function (a, b) {
-		return {$: 'StyleClass', a: a, b: b};
 	});
 var elm$core$Basics$never = function (_n0) {
 	never:
@@ -10660,33 +10658,6 @@ var mdgriffith$elm_ui$Element$mouseOver = function (decs) {
 			mdgriffith$elm_ui$Internal$Model$Hover,
 			mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
 };
-var mdgriffith$elm_ui$Internal$Flag$padding = mdgriffith$elm_ui$Internal$Flag$flag(2);
-var mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
-	function (a, b, c, d, e) {
-		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
-	});
-var mdgriffith$elm_ui$Element$paddingXY = F2(
-	function (x, y) {
-		return _Utils_eq(x, y) ? A2(
-			mdgriffith$elm_ui$Internal$Model$StyleClass,
-			mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + elm$core$String$fromInt(x),
-				x,
-				x,
-				x,
-				x)) : A2(
-			mdgriffith$elm_ui$Internal$Model$StyleClass,
-			mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + (elm$core$String$fromInt(x) + ('-' + elm$core$String$fromInt(y))),
-				y,
-				x,
-				y,
-				x));
-	});
 var mdgriffith$elm_ui$Internal$Flag$bgColor = mdgriffith$elm_ui$Internal$Flag$flag(8);
 var mdgriffith$elm_ui$Internal$Model$Colored = F3(
 	function (a, b, c) {
@@ -10768,310 +10739,208 @@ var mdgriffith$elm_ui$Element$Font$size = function (i) {
 		mdgriffith$elm_ui$Internal$Flag$fontSize,
 		mdgriffith$elm_ui$Internal$Model$FontSize(i));
 };
-var lucamug$style_framework$Framework$Button$buttonAttr = function (modifiers) {
-	var confButton = A3(
-		elm$core$List$foldl,
-		lucamug$style_framework$Framework$Button$processConf,
-		{color: lucamug$style_framework$Framework$Button$colorDefault, size: lucamug$style_framework$Framework$Button$SizeDefault, state: lucamug$style_framework$Framework$Button$StateDefault},
-		modifiers);
-	var fontSize = lucamug$style_framework$Framework$Button$toPx(confButton.size);
-	var spinnerColor = _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$ColorNew$greyDark : lucamug$style_framework$Framework$ColorNew$white;
-	var inFrontAddon = function () {
-		var _n6 = confButton.state;
-		switch (_n6.$) {
-			case 'StateLoading':
-				return _List_fromArray(
-					[
-						mdgriffith$elm_ui$Element$inFront(
-						A2(
-							mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[mdgriffith$elm_ui$Element$centerY, mdgriffith$elm_ui$Element$centerX]),
-							A3(lucamug$style_framework$Framework$SpinnerNew$spinner, lucamug$style_framework$Framework$SpinnerNew$Rotation, fontSize, spinnerColor)))
-					]);
-			case 'StateWaiting':
-				return _List_fromArray(
-					[
-						mdgriffith$elm_ui$Element$inFront(
-						A2(
-							mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[mdgriffith$elm_ui$Element$centerY, mdgriffith$elm_ui$Element$centerX]),
-							A3(lucamug$style_framework$Framework$SpinnerNew$spinner, lucamug$style_framework$Framework$SpinnerNew$ThreeCircles, fontSize - 4, spinnerColor)))
-					]);
-			default:
-				return _List_Nil;
-		}
-	}();
-	var cc = confButton.color;
-	var fontColor = function () {
-		var _n5 = confButton.state;
-		switch (_n5.$) {
-			case 'StateOutlined':
-				return cc;
-			case 'StateLoading':
-				return lucamug$style_framework$Framework$ColorNew$transparent;
-			case 'StateWaiting':
-				return lucamug$style_framework$Framework$ColorNew$transparent;
-			case 'StateDisabled':
-				return lucamug$style_framework$Framework$ColorNew$disabledButtonFont;
-			default:
-				return _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$ColorNew$greyDark : lucamug$style_framework$Framework$ColorNew$white;
-		}
-	}();
-	var fontMouseOverColor = function () {
-		var _n4 = confButton.state;
-		switch (_n4.$) {
-			case 'StateLoading':
-				return lucamug$style_framework$Framework$ColorNew$transparent;
-			case 'StateWaiting':
-				return lucamug$style_framework$Framework$ColorNew$transparent;
-			case 'StateOutlined':
-				return lucamug$style_framework$Framework$ColorNew$white;
-			default:
-				return A2(
+var lucamug$style_framework$Framework$ButtonNew$toButtonAttr = F2(
+	function (configuration, buttonConfig) {
+		var fontSize = A2(lucamug$style_framework$Framework$ButtonNew$toFontSize, configuration, buttonConfig.size);
+		var cc = A2(elm$core$Maybe$withDefault, configuration.button.defaultColorBackground, buttonConfig.color);
+		var fontColor = buttonConfig.outlined ? A2(
+			elm$core$Maybe$withDefault,
+			A2(lucamug$style_framework$Framework$ColorNew$findIdealTextColor, configuration, configuration.button.defaultColorBackground),
+			buttonConfig.color) : A2(lucamug$style_framework$Framework$ColorNew$findIdealTextColor, configuration, cc);
+		var spinnerColor = _Utils_eq(cc, configuration.color.white) ? configuration.color.greyDark : configuration.color.white;
+		var buttonPadding = A2(lucamug$style_framework$Framework$ButtonNew$toButtonPadding, configuration, buttonConfig.size);
+		var borderRadius = mdgriffith$elm_ui$Element$Border$rounded(2);
+		var borderColor = A2(elm$core$Maybe$withDefault, configuration.button.defaultColorBorder, buttonConfig.color);
+		var borderMouseOverColor = A2(
+			lucamug$style_framework$Framework$ColorNew$saturate,
+			0.9,
+			A2(lucamug$style_framework$Framework$ColorNew$adjustLightness, -configuration.button.hoverColorDelta, borderColor));
+		var backgroundColor = (buttonConfig.outlined && (!_Utils_eq(buttonConfig.color, elm$core$Maybe$Nothing))) ? configuration.color.transparent : cc;
+		var backgroundMouseOverColor = function () {
+			var _n1 = buttonConfig.color;
+			if (_n1.$ === 'Just') {
+				return buttonConfig.outlined ? A2(lucamug$style_framework$Framework$ColorNew$adjustLightness, -configuration.button.hoverColorDelta, cc) : A2(
 					lucamug$style_framework$Framework$ColorNew$saturate,
 					0.9,
-					A2(lucamug$style_framework$Framework$ColorNew$lighten, 0.8, fontColor));
-		}
-	}();
-	var buttonPadding = lucamug$style_framework$Framework$Button$toButtonPadding(confButton.size);
-	var borderRounded = function () {
-		var _n3 = confButton.size;
-		if (_n3.$ === 'SizeSmall') {
-			return 2;
-		} else {
-			return 3;
-		}
-	}();
-	var backgroundColor = function () {
-		var _n2 = confButton.state;
-		switch (_n2.$) {
-			case 'StateDefault':
-				return cc;
-			case 'StateOutlined':
-				return _Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white) ? lucamug$style_framework$Framework$Button$colorBorderDefault : lucamug$style_framework$Framework$ColorNew$transparent;
-			case 'StateLoading':
-				return cc;
-			case 'StateWaiting':
-				return cc;
-			default:
-				return lucamug$style_framework$Framework$ColorNew$disabledButtonBackground;
-		}
-	}();
-	var backgroundMouseOverColor = function () {
-		var _n1 = confButton.state;
-		if (_n1.$ === 'StateOutlined') {
-			return cc;
-		} else {
-			return A2(
-				lucamug$style_framework$Framework$ColorNew$saturate,
-				0.9,
-				A2(lucamug$style_framework$Framework$ColorNew$lighten, 0.8, backgroundColor));
-		}
-	}();
-	var borderColor = function () {
-		if (_Utils_eq(confButton.color, lucamug$style_framework$Framework$ColorNew$white)) {
-			return lucamug$style_framework$Framework$Button$colorBorderDefault;
-		} else {
-			var _n0 = confButton.state;
-			if (_n0.$ === 'StateOutlined') {
-				return cc;
+					A2(lucamug$style_framework$Framework$ColorNew$adjustLightness, -configuration.button.hoverColorDelta, backgroundColor));
 			} else {
 				return backgroundColor;
 			}
-		}
-	}();
-	var borderMouseOverColor = A2(
-		lucamug$style_framework$Framework$ColorNew$saturate,
-		0.9,
-		A2(lucamug$style_framework$Framework$ColorNew$lighten, 0.8, borderColor));
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				mdgriffith$elm_ui$Element$Font$size(fontSize),
-				mdgriffith$elm_ui$Element$Font$color(fontColor),
-				mdgriffith$elm_ui$Element$Background$color(backgroundColor),
-				A2(mdgriffith$elm_ui$Element$paddingXY, buttonPadding.a, buttonPadding.b),
-				mdgriffith$elm_ui$Element$Border$rounded(borderRounded),
-				mdgriffith$elm_ui$Element$Border$width(1),
-				mdgriffith$elm_ui$Element$Border$color(borderColor)
-			]),
-		_Utils_ap(
-			_Utils_eq(confButton.state, lucamug$style_framework$Framework$Button$StateDisabled) ? _List_fromArray(
+		}();
+		var fontMouseOverColor = buttonConfig.outlined ? A2(lucamug$style_framework$Framework$ColorNew$findIdealTextColor, configuration, backgroundMouseOverColor) : fontColor;
+		var inFrontAddon = function () {
+			var _n0 = buttonConfig.state;
+			if (_n0.$ === 'Loading') {
+				return _List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$inFront(
+						A2(
+							mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
+									mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill),
+									mdgriffith$elm_ui$Element$Background$color(backgroundColor),
+									mdgriffith$elm_ui$Element$htmlAttribute(
+									A2(elm$html$Html$Attributes$style, 'pointer-events', 'none'))
+								]),
+							A2(
+								mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[mdgriffith$elm_ui$Element$centerY, mdgriffith$elm_ui$Element$centerX]),
+								A3(lucamug$style_framework$Framework$SpinnerNew$spinner, lucamug$style_framework$Framework$SpinnerNew$Rotation, fontSize, fontColor))))
+					]);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		return _Utils_ap(
+			_List_fromArray(
 				[
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					A2(elm$html$Html$Attributes$style, 'cursor', 'not-allowed'))
-				]) : _List_fromArray(
-				[
-					mdgriffith$elm_ui$Element$mouseOver(
+					mdgriffith$elm_ui$Element$Font$size(fontSize),
+					mdgriffith$elm_ui$Element$Font$color(fontColor),
+					mdgriffith$elm_ui$Element$Background$color(backgroundColor),
+					buttonPadding,
+					borderRadius,
+					mdgriffith$elm_ui$Element$Border$width(1),
+					mdgriffith$elm_ui$Element$Border$color(borderColor)
+				]),
+			_Utils_ap(
+				_Utils_eq(buttonConfig.state, lucamug$style_framework$Framework$ButtonNew$Default) ? _List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$mouseOver(
+						_List_fromArray(
+							[
+								mdgriffith$elm_ui$Element$Font$color(fontMouseOverColor),
+								mdgriffith$elm_ui$Element$Background$color(backgroundMouseOverColor),
+								mdgriffith$elm_ui$Element$Border$color(borderMouseOverColor)
+							]))
+					]) : _Utils_ap(
 					_List_fromArray(
 						[
-							mdgriffith$elm_ui$Element$Font$color(fontMouseOverColor),
-							mdgriffith$elm_ui$Element$Background$color(backgroundMouseOverColor),
-							mdgriffith$elm_ui$Element$Border$color(borderMouseOverColor)
-						]))
-				]),
-			inFrontAddon));
-};
-var mdgriffith$elm_ui$Element$text = function (content) {
-	return mdgriffith$elm_ui$Internal$Model$Text(content);
-};
-var elm$json$Json$Encode$bool = _Json_wrap;
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
+							mdgriffith$elm_ui$Element$htmlAttribute(
+							A2(elm$html$Html$Attributes$style, 'pointer-events', 'none'))
+						]),
+					_Utils_eq(buttonConfig.state, lucamug$style_framework$Framework$ButtonNew$Disabled) ? _List_fromArray(
+						[
+							mdgriffith$elm_ui$Element$htmlAttribute(
+							A2(elm$html$Html$Attributes$style, 'opacity', '0.5'))
+						]) : _List_Nil),
+				_Utils_ap(
+					inFrontAddon,
+					_List_fromArray(
+						[
+							mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
+							mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill)
+						]))));
 	});
-var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
-var elm$html$Html$Attributes$tabindex = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'tabIndex',
-		elm$core$String$fromInt(n));
-};
-var mdgriffith$elm_ui$Internal$Flag$cursor = mdgriffith$elm_ui$Internal$Flag$flag(21);
-var mdgriffith$elm_ui$Element$pointer = A2(mdgriffith$elm_ui$Internal$Model$Class, mdgriffith$elm_ui$Internal$Flag$cursor, mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
+var lucamug$style_framework$Framework$ButtonNew$Jumbo = {$: 'Jumbo'};
+var lucamug$style_framework$Framework$ButtonNew$Large = {$: 'Large'};
+var lucamug$style_framework$Framework$ButtonNew$Loading = {$: 'Loading'};
+var lucamug$style_framework$Framework$ButtonNew$Small = {$: 'Small'};
+var lucamug$style_framework$Framework$ModifierNew$toButtonConfig = F3(
+	function (configuration, modifier, buttonConfig) {
+		switch (modifier.$) {
+			case 'Primary':
+				return _Utils_update(
+					buttonConfig,
+					{
+						color: elm$core$Maybe$Just(configuration.color.primary)
+					});
+			case 'Success':
+				return _Utils_update(
+					buttonConfig,
+					{
+						color: elm$core$Maybe$Just(configuration.color.success)
+					});
+			case 'Info':
+				return _Utils_update(
+					buttonConfig,
+					{
+						color: elm$core$Maybe$Just(configuration.color.info)
+					});
+			case 'Warning':
+				return _Utils_update(
+					buttonConfig,
+					{
+						color: elm$core$Maybe$Just(configuration.color.warning)
+					});
+			case 'Danger':
+				return _Utils_update(
+					buttonConfig,
+					{
+						color: elm$core$Maybe$Just(configuration.color.danger)
+					});
+			case 'Small':
+				return _Utils_update(
+					buttonConfig,
+					{
+						size: elm$core$Maybe$Just(lucamug$style_framework$Framework$ButtonNew$Small)
+					});
+			case 'Large':
+				return _Utils_update(
+					buttonConfig,
+					{
+						size: elm$core$Maybe$Just(lucamug$style_framework$Framework$ButtonNew$Large)
+					});
+			case 'Jumbo':
+				return _Utils_update(
+					buttonConfig,
+					{
+						size: elm$core$Maybe$Just(lucamug$style_framework$Framework$ButtonNew$Jumbo)
+					});
+			case 'Outlined':
+				return _Utils_update(
+					buttonConfig,
+					{outlined: true});
+			case 'Loading':
+				return _Utils_update(
+					buttonConfig,
+					{state: lucamug$style_framework$Framework$ButtonNew$Loading});
+			default:
+				return _Utils_update(
+					buttonConfig,
+					{state: lucamug$style_framework$Framework$ButtonNew$Disabled});
+		}
 	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
-};
-var mdgriffith$elm_ui$Element$Events$onClick = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Attr, elm$html$Html$Events$onClick);
-var mdgriffith$elm_ui$Element$Input$hasFocusStyle = function (attr) {
-	if (((attr.$ === 'StyleClass') && (attr.b.$ === 'PseudoSelector')) && (attr.b.a.$ === 'Focus')) {
-		var _n1 = attr.b;
-		var _n2 = _n1.a;
-		return true;
-	} else {
-		return false;
-	}
-};
+var lucamug$style_framework$Framework$ModifierNew$toButtonAttr = F2(
+	function (maybeConfiguration, modifiers) {
+		return function (configuration) {
+			return A2(
+				lucamug$style_framework$Framework$ButtonNew$toButtonAttr,
+				configuration,
+				A3(
+					elm$core$List$foldl,
+					lucamug$style_framework$Framework$ModifierNew$toButtonConfig(configuration),
+					lucamug$style_framework$Framework$ButtonNew$defaultConfig,
+					modifiers));
+		}(
+			A2(elm$core$Maybe$withDefault, lucamug$style_framework$Framework$ConfigurationNew$default, maybeConfiguration));
+	});
+var mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
+var mdgriffith$elm_ui$Internal$Model$asColumn = mdgriffith$elm_ui$Internal$Model$AsColumn;
 var mdgriffith$elm_ui$Internal$Model$htmlClass = function (cls) {
 	return mdgriffith$elm_ui$Internal$Model$Attr(
 		elm$html$Html$Attributes$class(cls));
 };
-var mdgriffith$elm_ui$Element$Input$focusDefault = function (attrs) {
-	return A2(elm$core$List$any, mdgriffith$elm_ui$Element$Input$hasFocusStyle, attrs) ? mdgriffith$elm_ui$Internal$Model$NoAttribute : mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
-};
-var mdgriffith$elm_ui$Element$Input$enter = 'Enter';
-var elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
-	return {$: 'MayPreventDefault', a: a};
-};
-var elm$html$Html$Events$preventDefaultOn = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
-	});
-var elm$json$Json$Decode$andThen = _Json_andThen;
-var elm$json$Json$Decode$fail = _Json_fail;
-var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$string = _Json_decodeString;
-var mdgriffith$elm_ui$Element$Input$onKey = F2(
-	function (desiredCode, msg) {
-		var decode = function (code) {
-			return _Utils_eq(code, desiredCode) ? elm$json$Json$Decode$succeed(msg) : elm$json$Json$Decode$fail('Not the enter key');
-		};
-		var isKey = A2(
-			elm$json$Json$Decode$andThen,
-			decode,
-			A2(elm$json$Json$Decode$field, 'key', elm$json$Json$Decode$string));
-		return mdgriffith$elm_ui$Internal$Model$Attr(
-			A2(
-				elm$html$Html$Events$preventDefaultOn,
-				'keyup',
-				A2(
-					elm$json$Json$Decode$map,
-					function (fired) {
-						return _Utils_Tuple2(fired, true);
-					},
-					isKey)));
-	});
-var mdgriffith$elm_ui$Element$Input$onEnter = function (msg) {
-	return A2(mdgriffith$elm_ui$Element$Input$onKey, mdgriffith$elm_ui$Element$Input$enter, msg);
-};
-var mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
-var mdgriffith$elm_ui$Element$Input$button = F2(
-	function (attrs, _n0) {
-		var onPress = _n0.onPress;
-		var label = _n0.label;
+var mdgriffith$elm_ui$Element$column = F2(
+	function (attrs, children) {
 		return A4(
 			mdgriffith$elm_ui$Internal$Model$element,
-			mdgriffith$elm_ui$Internal$Model$asEl,
+			mdgriffith$elm_ui$Internal$Model$asColumn,
 			mdgriffith$elm_ui$Internal$Model$div,
 			A2(
 				elm$core$List$cons,
-				mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$shrink),
+				mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
 				A2(
 					elm$core$List$cons,
 					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$shrink),
 					A2(
 						elm$core$List$cons,
-						mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.contentCenterX + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.contentCenterY + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.seButton + (' ' + mdgriffith$elm_ui$Internal$Style$classes.noTextSelection)))))),
-						A2(
-							elm$core$List$cons,
-							mdgriffith$elm_ui$Element$pointer,
-							A2(
-								elm$core$List$cons,
-								mdgriffith$elm_ui$Element$Input$focusDefault(attrs),
-								A2(
-									elm$core$List$cons,
-									mdgriffith$elm_ui$Internal$Model$Describe(mdgriffith$elm_ui$Internal$Model$Button),
-									A2(
-										elm$core$List$cons,
-										mdgriffith$elm_ui$Internal$Model$Attr(
-											elm$html$Html$Attributes$tabindex(0)),
-										function () {
-											if (onPress.$ === 'Nothing') {
-												return A2(
-													elm$core$List$cons,
-													mdgriffith$elm_ui$Internal$Model$Attr(
-														elm$html$Html$Attributes$disabled(true)),
-													attrs);
-											} else {
-												var msg = onPress.a;
-												return A2(
-													elm$core$List$cons,
-													mdgriffith$elm_ui$Element$Events$onClick(msg),
-													A2(
-														elm$core$List$cons,
-														mdgriffith$elm_ui$Element$Input$onEnter(msg),
-														attrs));
-											}
-										}()))))))),
-			mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				_List_fromArray(
-					[label])));
+						mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var lucamug$style_framework$Framework$Button$button = F3(
-	function (modifiers, onPress, label) {
-		return A2(
-			mdgriffith$elm_ui$Element$Input$button,
-			lucamug$style_framework$Framework$Button$buttonAttr(modifiers),
-			{
-				label: mdgriffith$elm_ui$Element$text(label),
-				onPress: onPress
-			});
-	});
-var lucamug$style_framework$Framework$Modifier$Medium = {$: 'Medium'};
-var lucamug$style_framework$Framework$Modifier$Outlined = {$: 'Outlined'};
-var lucamug$style_framework$Framework$Modifier$Success = {$: 'Success'};
 var mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 'OnlyDynamic', a: a, b: b};
@@ -11323,17 +11192,543 @@ var mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var mdgriffith$elm_ui$Element$layout = mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
+var mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
+var mdgriffith$elm_ui$Internal$Model$asRow = mdgriffith$elm_ui$Internal$Model$AsRow;
+var mdgriffith$elm_ui$Element$row = F2(
+	function (attrs, children) {
+		return A4(
+			mdgriffith$elm_ui$Internal$Model$element,
+			mdgriffith$elm_ui$Internal$Model$asRow,
+			mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				elm$core$List$cons,
+				mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
+				A2(
+					elm$core$List$cons,
+					mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$shrink),
+					A2(
+						elm$core$List$cons,
+						mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var mdgriffith$elm_ui$Internal$Flag$spacing = mdgriffith$elm_ui$Internal$Flag$flag(3);
+var mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
+	function (a, b, c) {
+		return {$: 'SpacingStyle', a: a, b: b, c: c};
+	});
+var mdgriffith$elm_ui$Internal$Model$spacingName = F2(
+	function (x, y) {
+		return 'spacing-' + (elm$core$String$fromInt(x) + ('-' + elm$core$String$fromInt(y)));
+	});
+var mdgriffith$elm_ui$Element$spacing = function (x) {
+	return A2(
+		mdgriffith$elm_ui$Internal$Model$StyleClass,
+		mdgriffith$elm_ui$Internal$Flag$spacing,
+		A3(
+			mdgriffith$elm_ui$Internal$Model$SpacingStyle,
+			A2(mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
+			x,
+			x));
+};
+var mdgriffith$elm_ui$Element$text = function (content) {
+	return mdgriffith$elm_ui$Internal$Model$Text(content);
+};
+var elm$json$Json$Encode$bool = _Json_wrap;
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
+	});
+var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
+var elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		elm$core$String$fromInt(n));
+};
+var mdgriffith$elm_ui$Internal$Flag$cursor = mdgriffith$elm_ui$Internal$Flag$flag(21);
+var mdgriffith$elm_ui$Element$pointer = A2(mdgriffith$elm_ui$Internal$Model$Class, mdgriffith$elm_ui$Internal$Flag$cursor, mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
+var mdgriffith$elm_ui$Element$Events$onClick = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Attr, elm$html$Html$Events$onClick);
+var mdgriffith$elm_ui$Element$Input$hasFocusStyle = function (attr) {
+	if (((attr.$ === 'StyleClass') && (attr.b.$ === 'PseudoSelector')) && (attr.b.a.$ === 'Focus')) {
+		var _n1 = attr.b;
+		var _n2 = _n1.a;
+		return true;
+	} else {
+		return false;
+	}
+};
+var mdgriffith$elm_ui$Element$Input$focusDefault = function (attrs) {
+	return A2(elm$core$List$any, mdgriffith$elm_ui$Element$Input$hasFocusStyle, attrs) ? mdgriffith$elm_ui$Internal$Model$NoAttribute : mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
+};
+var mdgriffith$elm_ui$Element$Input$enter = 'Enter';
+var elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
+var elm$json$Json$Decode$andThen = _Json_andThen;
+var elm$json$Json$Decode$fail = _Json_fail;
+var elm$json$Json$Decode$field = _Json_decodeField;
+var elm$json$Json$Decode$string = _Json_decodeString;
+var mdgriffith$elm_ui$Element$Input$onKey = F2(
+	function (desiredCode, msg) {
+		var decode = function (code) {
+			return _Utils_eq(code, desiredCode) ? elm$json$Json$Decode$succeed(msg) : elm$json$Json$Decode$fail('Not the enter key');
+		};
+		var isKey = A2(
+			elm$json$Json$Decode$andThen,
+			decode,
+			A2(elm$json$Json$Decode$field, 'key', elm$json$Json$Decode$string));
+		return mdgriffith$elm_ui$Internal$Model$Attr(
+			A2(
+				elm$html$Html$Events$preventDefaultOn,
+				'keyup',
+				A2(
+					elm$json$Json$Decode$map,
+					function (fired) {
+						return _Utils_Tuple2(fired, true);
+					},
+					isKey)));
+	});
+var mdgriffith$elm_ui$Element$Input$onEnter = function (msg) {
+	return A2(mdgriffith$elm_ui$Element$Input$onKey, mdgriffith$elm_ui$Element$Input$enter, msg);
+};
+var mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
+var mdgriffith$elm_ui$Element$Input$button = F2(
+	function (attrs, _n0) {
+		var onPress = _n0.onPress;
+		var label = _n0.label;
+		return A4(
+			mdgriffith$elm_ui$Internal$Model$element,
+			mdgriffith$elm_ui$Internal$Model$asEl,
+			mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				elm$core$List$cons,
+				mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$shrink),
+				A2(
+					elm$core$List$cons,
+					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$shrink),
+					A2(
+						elm$core$List$cons,
+						mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.contentCenterX + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.contentCenterY + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.seButton + (' ' + mdgriffith$elm_ui$Internal$Style$classes.noTextSelection)))))),
+						A2(
+							elm$core$List$cons,
+							mdgriffith$elm_ui$Element$pointer,
+							A2(
+								elm$core$List$cons,
+								mdgriffith$elm_ui$Element$Input$focusDefault(attrs),
+								A2(
+									elm$core$List$cons,
+									mdgriffith$elm_ui$Internal$Model$Describe(mdgriffith$elm_ui$Internal$Model$Button),
+									A2(
+										elm$core$List$cons,
+										mdgriffith$elm_ui$Internal$Model$Attr(
+											elm$html$Html$Attributes$tabindex(0)),
+										function () {
+											if (onPress.$ === 'Nothing') {
+												return A2(
+													elm$core$List$cons,
+													mdgriffith$elm_ui$Internal$Model$Attr(
+														elm$html$Html$Attributes$disabled(true)),
+													attrs);
+											} else {
+												var msg = onPress.a;
+												return A2(
+													elm$core$List$cons,
+													mdgriffith$elm_ui$Element$Events$onClick(msg),
+													A2(
+														elm$core$List$cons,
+														mdgriffith$elm_ui$Element$Input$onEnter(msg),
+														attrs));
+											}
+										}()))))))),
+			mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[label])));
+	});
 var lucamug$style_framework$Main$main = A2(
 	mdgriffith$elm_ui$Element$layout,
 	_List_Nil,
 	A2(
-		mdgriffith$elm_ui$Element$el,
+		mdgriffith$elm_ui$Element$column,
 		_List_fromArray(
-			[mdgriffith$elm_ui$Element$centerX, mdgriffith$elm_ui$Element$centerY]),
-		A3(
-			lucamug$style_framework$Framework$Button$button,
-			_List_fromArray(
-				[lucamug$style_framework$Framework$Modifier$Medium, lucamug$style_framework$Framework$Modifier$Success, lucamug$style_framework$Framework$Modifier$Outlined]),
-			elm$core$Maybe$Nothing,
-			'Button')));
+			[
+				mdgriffith$elm_ui$Element$centerX,
+				mdgriffith$elm_ui$Element$centerY,
+				mdgriffith$elm_ui$Element$spacing(15)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$spacing(5)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(lucamug$style_framework$Framework$ModifierNew$toButtonAttr, elm$core$Maybe$Nothing, _List_Nil),
+						{
+							label: mdgriffith$elm_ui$Element$text('Default'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Primary])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Primary'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Success])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Success'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Info])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Info'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Warning])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Warning'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Danger])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Danger'),
+							onPress: elm$core$Maybe$Nothing
+						})
+					])),
+				A2(
+				mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$spacing(5)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Outlined])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Button'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Outlined, lucamug$style_framework$Framework$ModifierNew$Primary])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Primary'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Outlined, lucamug$style_framework$Framework$ModifierNew$Success])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Success'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Outlined, lucamug$style_framework$Framework$ModifierNew$Info])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Info'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Outlined, lucamug$style_framework$Framework$ModifierNew$Warning])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Warning'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Outlined, lucamug$style_framework$Framework$ModifierNew$Danger])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Danger'),
+							onPress: elm$core$Maybe$Nothing
+						})
+					])),
+				A2(
+				mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$spacing(5)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Small])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Small'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(lucamug$style_framework$Framework$ModifierNew$toButtonAttr, elm$core$Maybe$Nothing, _List_Nil),
+						{
+							label: mdgriffith$elm_ui$Element$text('Default'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Large])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Large'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Jumbo])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Jumbo'),
+							onPress: elm$core$Maybe$Nothing
+						})
+					])),
+				A2(
+				mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$spacing(5)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Disabled])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Button'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Disabled, lucamug$style_framework$Framework$ModifierNew$Primary])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Primary'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Disabled, lucamug$style_framework$Framework$ModifierNew$Success])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Success'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Disabled, lucamug$style_framework$Framework$ModifierNew$Info])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Info'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Disabled, lucamug$style_framework$Framework$ModifierNew$Warning])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Warning'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Disabled, lucamug$style_framework$Framework$ModifierNew$Danger])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Danger'),
+							onPress: elm$core$Maybe$Nothing
+						})
+					])),
+				A2(
+				mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$spacing(5)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Loading])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Button'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Loading, lucamug$style_framework$Framework$ModifierNew$Primary])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Primary'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Loading, lucamug$style_framework$Framework$ModifierNew$Success])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Success'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Loading, lucamug$style_framework$Framework$ModifierNew$Info])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Info'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Loading, lucamug$style_framework$Framework$ModifierNew$Warning])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Warning'),
+							onPress: elm$core$Maybe$Nothing
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						A2(
+							lucamug$style_framework$Framework$ModifierNew$toButtonAttr,
+							elm$core$Maybe$Nothing,
+							_List_fromArray(
+								[lucamug$style_framework$Framework$ModifierNew$Loading, lucamug$style_framework$Framework$ModifierNew$Danger])),
+						{
+							label: mdgriffith$elm_ui$Element$text('Danger'),
+							onPress: elm$core$Maybe$Nothing
+						})
+					]))
+			])));
 _Platform_export({'Main':{'init':_VirtualDom_init(lucamug$style_framework$Main$main)(0)(0)}});}(this));

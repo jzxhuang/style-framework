@@ -1,5 +1,4 @@
 #!/bin/bash
 path=examples/exampleButton
-cp src/myStyle.elm.example src/myStyle.elm
-# cd examples/exampleButton
+cmd/reset
 npx elm-live $path/src/Main.elm --dir=$path/docs --port=8004  -e node_modules/.bin/elm -- --debug --output=$path/docs/js-dev/main.js

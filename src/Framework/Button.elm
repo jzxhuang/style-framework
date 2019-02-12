@@ -45,7 +45,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import Framework.ColorNew
-import Framework.ConfigurationNew exposing (configuration)
+import Framework.Configuration exposing (conf)
 import Framework.Modifier exposing (Modifier(..))
 import Framework.SpinnerNew as Spinner
 import Html
@@ -181,38 +181,38 @@ toPx : Size -> Int
 toPx size =
     case size of
         SizeSmall ->
-            configuration.button.fontSmall
+            conf.button.fontSmall
 
         SizeDefault ->
-            configuration.button.fontDefault
+            conf.button.fontDefault
 
         SizeMedium ->
-            configuration.button.fontMedium
+            conf.button.fontMedium
 
         SizeLarge ->
-            configuration.button.fontLarge
+            conf.button.fontLarge
 
         SizeJumbo ->
-            configuration.button.fontJumbo
+            conf.button.fontJumbo
 
 
 toButtonPadding : Size -> ( Int, Int )
 toButtonPadding size =
     case size of
         SizeSmall ->
-            ( configuration.button.paddingXSmall, configuration.button.paddingYSmall )
+            ( conf.button.paddingXSmall, conf.button.paddingYSmall )
 
         SizeDefault ->
-            ( configuration.button.paddingXDefault, configuration.button.paddingYDefault )
+            ( conf.button.paddingXDefault, conf.button.paddingYDefault )
 
         SizeMedium ->
-            ( configuration.button.paddingXMedium, configuration.button.paddingYMedium )
+            ( conf.button.paddingXMedium, conf.button.paddingYMedium )
 
         SizeLarge ->
-            ( configuration.button.paddingXLarge, configuration.button.paddingYLarge )
+            ( conf.button.paddingXLarge, conf.button.paddingYLarge )
 
         SizeJumbo ->
-            ( configuration.button.paddingXJumbo, configuration.button.paddingYJumbo )
+            ( conf.button.paddingXJumbo, conf.button.paddingYJumbo )
 
 
 processConf : Modifier -> Conf -> Conf

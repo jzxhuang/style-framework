@@ -6,9 +6,11 @@ import Element exposing (..)
 import Element.Background as Background
 import Element.Events
 import Element.Font as Font
+import Element.Input exposing (button)
 import Framework.ColorNew
 import Framework.ConfigurationNew as Configuration
 import Framework.Logo as Logo
+import Framework.ModifierNew exposing (Modifier(..), toButtonAttr)
 import Html
 import Html.Attributes
 import Url
@@ -157,7 +159,7 @@ view model =
                     , width fill
                     , scrollbarY
                     , Font.color Configuration.default.color.black
-                    , Background.color Configuration.default.color.greyLighter
+                    , Background.color Configuration.default.color.white
                     ]
                   <|
                     viewContent model
@@ -170,18 +172,75 @@ viewContent : Model -> Element Msg
 viewContent model =
     column
         [ paddingXY (mainPadding + 100) mainPadding
-        , spacing mainPadding
+        , spacing (mainPadding - 10)
         ]
         [ el [] <| viewLogo title subTitle version
-        , el [ Font.size 24 ] none
+        , el [ Font.size 24 ]
+            none
 
         -- , el [ centerX, alpha 0.2 ] <| Icon.chevronDown Framework.Color.grey 32
         -- , column
         --             []
         --           <|
         --             List.map (\( introspection, _ ) -> viewIntrospection model introspection) model.introspections
-        , column [] [ text "AAA" ]
-        , column [] [ text "BBB" ]
+        , column
+            [ spacing 10, width fill ]
+            [ el [ Font.size 32, Font.bold ] (text <| "Modifiers")
+            , paragraph [ Font.size 24, Font.extraLight ] [ text "A readable, easy-to-use styling system." ]
+            ]
+        , column
+            [ spacing 10, width fill ]
+            [ el [ Font.size 32, Font.bold ] (text <| "Configuration")
+            , paragraph [ Font.size 24, Font.extraLight ] [ text "Description" ]
+            ]
+
+        --
+        , el [ Font.size 32, Font.bold, width fill ] (text <| "Showcase")
+        , column
+            [ spacing 10, width fill ]
+            [ el [ Font.size 32, Font.bold ] (text <| "Buttons")
+            , paragraph [ Font.size 24, Font.extraLight ] [ text "Description" ]
+            , column [ centerX, centerY, spacing 15 ]
+                [ row [ spacing 5 ]
+                    [ button (toButtonAttr Nothing []) { onPress = Nothing, label = text "Default" }
+                    , button (toButtonAttr Nothing [ Primary ]) { onPress = Nothing, label = text "Primary" }
+                    , button (toButtonAttr Nothing [ Success ]) { onPress = Nothing, label = text "Success" }
+                    , button (toButtonAttr Nothing [ Info ]) { onPress = Nothing, label = text "Info" }
+                    , button (toButtonAttr Nothing [ Warning ]) { onPress = Nothing, label = text "Warning" }
+                    , button (toButtonAttr Nothing [ Danger ]) { onPress = Nothing, label = text "Danger" }
+                    ]
+                , row [ spacing 5 ]
+                    [ button (toButtonAttr Nothing [ Outlined ]) { onPress = Nothing, label = text "Button" }
+                    , button (toButtonAttr Nothing [ Outlined, Primary ]) { onPress = Nothing, label = text "Primary" }
+                    , button (toButtonAttr Nothing [ Outlined, Success ]) { onPress = Nothing, label = text "Success" }
+                    , button (toButtonAttr Nothing [ Outlined, Info ]) { onPress = Nothing, label = text "Info" }
+                    , button (toButtonAttr Nothing [ Outlined, Warning ]) { onPress = Nothing, label = text "Warning" }
+                    , button (toButtonAttr Nothing [ Outlined, Danger ]) { onPress = Nothing, label = text "Danger" }
+                    ]
+                , row [ spacing 5 ]
+                    [ button (toButtonAttr Nothing [ Small ]) { onPress = Nothing, label = text "Small" }
+                    , button (toButtonAttr Nothing []) { onPress = Nothing, label = text "Default" }
+                    , button (toButtonAttr Nothing [ Large ]) { onPress = Nothing, label = text "Large" }
+                    , button (toButtonAttr Nothing [ Jumbo ]) { onPress = Nothing, label = text "Jumbo" }
+                    ]
+                , row [ spacing 5 ]
+                    [ button (toButtonAttr Nothing [ Disabled ]) { onPress = Nothing, label = text "Button" }
+                    , button (toButtonAttr Nothing [ Disabled, Primary ]) { onPress = Nothing, label = text "Primary" }
+                    , button (toButtonAttr Nothing [ Disabled, Success ]) { onPress = Nothing, label = text "Success" }
+                    , button (toButtonAttr Nothing [ Disabled, Info ]) { onPress = Nothing, label = text "Info" }
+                    , button (toButtonAttr Nothing [ Disabled, Warning ]) { onPress = Nothing, label = text "Warning" }
+                    , button (toButtonAttr Nothing [ Disabled, Danger ]) { onPress = Nothing, label = text "Danger" }
+                    ]
+                , row [ spacing 5 ]
+                    [ button (toButtonAttr Nothing [ Loading ]) { onPress = Nothing, label = text "Button" }
+                    , button (toButtonAttr Nothing [ Loading, Primary ]) { onPress = Nothing, label = text "Primary" }
+                    , button (toButtonAttr Nothing [ Loading, Success ]) { onPress = Nothing, label = text "Success" }
+                    , button (toButtonAttr Nothing [ Loading, Info ]) { onPress = Nothing, label = text "Info" }
+                    , button (toButtonAttr Nothing [ Loading, Warning ]) { onPress = Nothing, label = text "Warning" }
+                    , button (toButtonAttr Nothing [ Loading, Danger ]) { onPress = Nothing, label = text "Danger" }
+                    ]
+                ]
+            ]
         ]
 
 
@@ -192,25 +251,22 @@ viewSidebar model =
         , Font.color Configuration.default.color.greyLight
         , width fill
         , height fill
-        , spacing 30
+        , spacing 20
         , paddingXY mainPadding mainPadding
         ]
         [ column [ height shrink ]
-            [ viewLogo titleLeftSide subTitle version
-
-            {- , row
-               [ spacing 10
-               , Font.size 14
-               , Font.color <| Color.toElementColor model.conf.grey9
-               , paddingXY 0 20
-               ]
-               [ el [ pointer, Events.onClick MsgOpenAllSections ] <| text "Expand All"
-               , el [ pointer, Events.onClick MsgCloseAllSections ] <| text "Close All"
-               ]
-            -}
-            ]
-        , column [ moveLeft 5, spacing 30, height shrink, alignTop ] <|
-            List.map viewSidebarSections model.sidebarSections
+            [ viewLogo titleLeftSide subTitle version ]
+        , column [ moveLeft 5, height shrink, width fill ] <|
+            row
+                [ spacing 20
+                , width fill
+                , Font.color Configuration.default.color.grey
+                , paddingEach { edges | bottom = 10 }
+                ]
+                [ el [ pointer, centerX, Element.Events.onClick (ToggleAllSections True) ] <| text "Expand All"
+                , el [ pointer, centerX, Element.Events.onClick (ToggleAllSections False) ] <| text "Close All"
+                ]
+                :: List.map viewSidebarSections model.sidebarSections
         ]
 
 
@@ -234,9 +290,10 @@ viewLogo title_ subTitle_ version_ =
 viewSidebarSections section =
     column
         [ Font.color Configuration.default.color.grey ]
+    <|
         [ row [ Font.bold ]
             [ el
-                [ padding 10
+                [ paddingXY 10 5
                 , pointer
                 , Element.Events.onClick <| ToggleSection section.name Nothing
                 , rotate
@@ -251,33 +308,38 @@ viewSidebarSections section =
             , link [ Element.Events.onClick <| ToggleSection section.name (Just True) ]
                 { label = text section.name, url = "#" ++ toId section.name }
             ]
-        , column
-            ([ height shrink
-             , Font.size 16
-             , Font.color Configuration.default.color.greyLighter
-             , spacing 8
-             , paddingEach { bottom = 1, left = 35, right = 0, top = 12 }
-             , clip
-             ]
-                ++ (if section.open then
-                        [ htmlAttribute <| Html.Attributes.class "elmStyleguideGenerator-open" ]
-
-                    else
-                        [ htmlAttribute <| Html.Attributes.class "elmStyleguideGenerator-close" ]
-                   )
-            )
-          <|
-            List.map
-                (\subSection ->
-                    link []
-                        { label = text subSection
-                        , url = "#" ++ toId subSection
-                        }
-                )
-                section.subSections
-
-        -- (viewListVariationForMenu introspection introspection.variations)
         ]
+            ++ (if section.open then
+                    [ column
+                        ([ height shrink
+                         , Font.size 16
+                         , Font.color Configuration.default.color.greyLighter
+                         , spacing 8
+                         , paddingEach { bottom = 15, left = 35, right = 0, top = 10 }
+                         , clip
+                         ]
+                            ++ (if section.open then
+                                    [ htmlAttribute <| Html.Attributes.class "elmStyleguideGenerator-open" ]
+
+                                else
+                                    [ htmlAttribute <| Html.Attributes.class "elmStyleguideGenerator-close" ]
+                               )
+                        )
+                      <|
+                        List.map
+                            (\subSection ->
+                                link []
+                                    { label = text subSection
+                                    , url = "#" ++ toId subSection
+                                    }
+                            )
+                            section.subSections
+                    ]
+
+                else
+                    [ none ]
+                -- (viewListVariationForMenu introspection introspection.variations)
+               )
 
 
 sidebarSections : List SidebarSection
@@ -354,7 +416,7 @@ subTitle =
 
 
 version =
-    "1.0.0"
+    "2.0.0"
 
 
 titleLeftSide =
@@ -383,6 +445,10 @@ titleLeftSide =
             , text "Style"
             ]
         ]
+
+
+edges =
+    { left = 0, right = 0, top = 0, bottom = 0 }
 
 
 
